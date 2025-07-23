@@ -28,8 +28,7 @@ export const KeysTab = ({
   editKeyPair,
   setEditKeyPair
 }: KeysTabProps) => {
-  const tOwnerKeys = useTranslations('settings.ownerKeys')
-  const tButtons = useTranslations('buttons')
+  const t = useTranslations()
 
   const {
     handleCreateKeyPair,
@@ -60,7 +59,7 @@ export const KeysTab = ({
 
   const handleMnemonicChange = useCallback((value: string) => {
     setEditKeyPair((prev: KeyPair | null) =>
-      prev ? { ...prev, mnemonic: value } : { publicKey: '', privateKey: '', mnemonic: value, note: '' }
+      prev ? { ...prev, mnemonic: value } : { publicKey: '', mnemonic: value, note: '' }
     )
   }, [setEditKeyPair])
 
@@ -71,25 +70,30 @@ export const KeysTab = ({
     }
   }, [editKeyPair, handleSaveKeyPair])
 
+  // Handle back button
+  const handleBack = useCallback(() => {
+    setShowCreateKeyPair(false)
+    setEditKeyPair(null)
+  }, [setShowCreateKeyPair, setEditKeyPair])
+
   if (showCreateKeyPair) {
     return (
-      <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
-        <div className="flex items-center gap-2 mb-4">
-          <Button variant="ghost" size="icon" onClick={() => setShowCreateKeyPair(false)}>
+      <div className="p-6">
+        <div className="flex items-center mb-2">
+          <Button variant="secondary" size="icon" onClick={handleBack}>
             <ChevronLeft className="size-4" />
           </Button>
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-            {tOwnerKeys('title')}
-          </h2>
+          <span className="text-base font-medium text-gray-600 dark:text-gray-400">Back</span>
         </div>
-        <div className="flex justify-center text-center pt-2 pb-6">
+
+        <div className="border p-4 rounded-lg">
           <CreateKeyPairForm
             keyPair={editKeyPair}
             onNoteChange={handleNoteChange}
             onPublicKeyChange={handlePublicKeyChange}
             onMnemonicChange={handleMnemonicChange}
             onSave={handleSave}
-            onCancel={() => setShowCreateKeyPair(false)}
+            onCancel={handleBack}
           />
         </div>
       </div>
@@ -97,24 +101,13 @@ export const KeysTab = ({
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-          {tOwnerKeys('title')}
-        </h2>
-        {keyPairs.length > 0 && (
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={handleCreateKeyPair}>
-            {tButtons('createKey')}
-          </Button>
-        )}
-      </div>
-
+    <div className="p-6">
       {keyPairs.length === 0 ? (
         <EmptyState
           icon="/PublicKeys.svg"
-          title={tOwnerKeys('noKeys')}
-          description={tOwnerKeys('description')}
-          buttonText={tButtons('createKey')}
+          title={t('settings.ownerKeys.noKeys')}
+          description={t('settings.ownerKeys.description')}
+          buttonText={t('buttons.createKey')}
           onButtonClick={handleCreateKeyPair}
         />
       ) : (
@@ -126,6 +119,14 @@ export const KeysTab = ({
           onDelete={handleDeleteKeyPair}
           onSaveNote={handleSaveNoteInTable}
         />
+      )}
+
+      {keyPairs.length > 0 && (
+        <div className="flex justify-end gap-3 mt-6">
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white" size="sm" onClick={handleCreateKeyPair}>
+            {t('buttons.createKey')}
+          </Button>
+        </div>
       )}
     </div>
   )
