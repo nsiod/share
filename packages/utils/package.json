@@ -26,6 +26,7 @@
     "prepack": "pnpm build"
   },
   "dependencies": {
+    "@nsiod/uncrypto": "workspace:*",
     "@noble/ciphers": "catalog:prod",
     "@noble/curves": "catalog:prod",
     "@noble/hashes": "catalog:prod",
