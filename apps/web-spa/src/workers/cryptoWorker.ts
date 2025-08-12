@@ -1,5 +1,5 @@
-import { base58 } from '@scure/base'
 import { streamCrypto, textCrypto, parseStreamHeader, detect } from '@nsiod/share-utils'
+import { base58 } from '@scure/base'
 
 // Interface for worker input
 interface WorkerInput {

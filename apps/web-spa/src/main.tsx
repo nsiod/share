@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import App from './App';
 import Home from './pages/Home';
+// import './index.css'
 // @ts-ignore
 import '@nsiod/share-ui/css'
 
