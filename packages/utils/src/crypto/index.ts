@@ -289,10 +289,6 @@ async function hashFile(file: File): Promise<Uint8Array> {
   }
 }
 
-function getMimeType(ext: string): string {
-  return 'application/octet-stream'
-}
-
 // Create streaming header
 function createStreamHeader(streamHeader: StreamHeader) {
   const header: HeaderData = {
@@ -556,7 +552,7 @@ export async function streamDecryptWithPassword(options: StreamDecryptOptions) {
     cipher.destroy()
     onStage?.('Creating decrypted file...')
 
-    return { file: new Blob(chunks as BlobPart[], { type: getMimeType(header.e) }), signatureValid: undefined }
+    return { file: new Blob(chunks as BlobPart[]), signatureValid: undefined }
   } finally {
     if (key) {
       secureClear(key.buffer)
@@ -691,7 +687,7 @@ export async function streamDecryptWithPrivateKey(options: StreamDecryptOptions)
     cipher.destroy()
     onStage?.('Creating decrypted file...')
 
-    return { file: new Blob(chunks as BlobPart[], { type: getMimeType(header.e) }), signatureValid: isValid }
+    return { file: new Blob(chunks as BlobPart[]), signatureValid: isValid }
   } finally {
     if (key) {
       secureClear(key.buffer)
