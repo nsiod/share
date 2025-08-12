@@ -289,10 +289,6 @@ async function hashFile(file: File): Promise<Uint8Array> {
   }
 }
 
-function getMimeType(ext: string): string {
-  return 'application/octet-stream'
-}
-
 // Create streaming header
 function createStreamHeader(streamHeader: StreamHeader) {
   const header: HeaderData = {
