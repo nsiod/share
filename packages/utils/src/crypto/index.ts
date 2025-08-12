@@ -667,8 +667,9 @@ export async function streamDecryptWithPrivateKey(options: StreamDecryptOptions)
     if (signature && sender) {
       onStage?.('Verifying digital signature...')
       const fileHash = await hashFile(file)
-      const sig = secp256k1.Signature.fromCompact(signature)
-      isValid = secp256k1.verify(sig, fileHash, sender)
+      // const sig = secp256k1.Signature.fromCompact(signature)
+      // isValid = secp256k1.verify(sig, fileHash, sender)
+      isValid = secp256k1.verify(signature, fileHash, sender)
 
       if (!isValid) {
         onStage?.(ERROR_MESSAGES.SIGNATURE_VERIFY_FAILED)
