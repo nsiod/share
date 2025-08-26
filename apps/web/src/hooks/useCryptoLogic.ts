@@ -361,7 +361,7 @@ export const useCryptoLogic = ({
     } catch (error) {
       toast.error(error instanceof Error ? error.message : tMessages('error.failedProcessFile'))
     } finally {
-      updateState({ isProcessing: false })
+      updateState({ isProcessing: false, progress: 0 })
     }
   }, [state, tMessages, updateState, workerRef])
 
