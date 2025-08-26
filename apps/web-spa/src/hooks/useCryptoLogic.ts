@@ -17,8 +17,8 @@ interface UseCryptoLogicProps {
   state: CryptoState
   updateState: (updates: Partial<CryptoState>) => void
   clearState: () => void
-  workerRef: React.MutableRefObject<Worker | null>
-  detectTimeoutRef: React.MutableRefObject<NodeJS.Timeout | null>
+  workerRef: React.RefObject<Worker | null>
+  detectTimeoutRef: React.RefObject<NodeJS.Timeout | null>
 }
 
 export const useCryptoLogic = ({
