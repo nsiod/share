@@ -58,7 +58,7 @@ export const GeneralTab = ({
 
   // Initialize crypto worker
   useEffect(() => {
-    workerRef.current = new Worker(new URL('../../workers/cryptoWorker.ts', import.meta.url))
+    workerRef.current = new Worker(new URL('@/workers/cryptoWorker.ts', import.meta.url))
     return () => workerRef.current?.terminate()
   }, [])
 
@@ -69,6 +69,10 @@ export const GeneralTab = ({
     removePasswordHash()
     setIsResetPopoverOpen(false)
     toast.success(t('messages.success.accountReset'))
+
+    setTimeout(() => {
+      window.location.reload()
+    }, 1000)
   }, [removePublicKeys, removeKeyPairs, removePasswordHash, t])
 
   // Create backup data

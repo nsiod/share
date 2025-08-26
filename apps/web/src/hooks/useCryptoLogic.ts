@@ -43,6 +43,7 @@ export const useCryptoLogic = ({
   // Handle text input change with detection
   const handleTextInputChange = useCallback(async (value: string) => {
     updateState({ textInput: value })
+    refreshKeysFromStorage()
 
     // Clear previous timeout
     if (detectTimeoutRef.current) {
@@ -102,6 +103,7 @@ export const useCryptoLogic = ({
   // Enhanced key input change handler
   const handleKeyInputChange = useCallback((value: string) => {
     updateState({ keyInput: value })
+    refreshKeysFromStorage()
 
     if (!value.trim()) {
       if (state.processMode === 'encrypt') {
