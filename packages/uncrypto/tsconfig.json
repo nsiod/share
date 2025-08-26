@@ -1,0 +1,7 @@
+{
+  "extends": "@nsiod/share-tsconfig/utils",
+  "compilerOptions": {
+    "outDir": "dist",
+  },
+  "include": ["src/"]
+}

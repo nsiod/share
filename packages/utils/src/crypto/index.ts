@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-unused-vars */
+import { subtle, randomUUID, getRandomValues } from "@nsiod/uncrypto"
 import { xchacha20poly1305 as gcm } from '@noble/ciphers/chacha'
 import { bytesToUtf8, concatBytes, utf8ToBytes } from '@noble/ciphers/utils'
 import { managedNonce, randomBytes } from '@noble/ciphers/webcrypto'
@@ -133,7 +134,7 @@ class EncryptionError extends CryptoError {
 // Helper functions
 function secureClear(buffer: ArrayBufferLike): void {
   const view = new Uint8Array(buffer)
-  crypto.getRandomValues(view)
+  getRandomValues(view)
   view.fill(0)
 }
 
@@ -496,7 +497,7 @@ export async function streamEncryptWithPassword(options: StreamEncryptOptions) {
     cipher.destroy()
     onStage?.('Creating encrypted file...')
 
-    return new Blob(chunks, { type: 'application/octet-stream' })
+    return new Blob(chunks as BlobPart[], { type: 'application/octet-stream' })
   } finally {
     if (key) {
       secureClear(key.buffer)
@@ -551,7 +552,7 @@ export async function streamDecryptWithPassword(options: StreamDecryptOptions) {
     cipher.destroy()
     onStage?.('Creating decrypted file...')
 
-    return { file: new Blob(chunks), signatureValid: undefined }
+    return { file: new Blob(chunks as BlobPart[]), signatureValid: undefined }
   } finally {
     if (key) {
       secureClear(key.buffer)
@@ -620,7 +621,7 @@ export async function streamEncryptWithPublicKey(options: StreamEncryptOptions) 
     cipher.destroy()
     onStage?.('Creating encrypted file...')
 
-    return new Blob(chunks, { type: 'application/octet-stream' })
+    return new Blob(chunks as BlobPart[], { type: 'application/octet-stream' })
   } finally {
     secureClear(symmetricKey.buffer)
   }
@@ -662,8 +663,9 @@ export async function streamDecryptWithPrivateKey(options: StreamDecryptOptions)
     if (signature && sender) {
       onStage?.('Verifying digital signature...')
       const fileHash = await hashFile(file)
-      const sig = secp256k1.Signature.fromCompact(signature)
-      isValid = secp256k1.verify(sig, fileHash, sender)
+      // const sig = secp256k1.Signature.fromCompact(signature)
+      // isValid = secp256k1.verify(sig, fileHash, sender)
+      isValid = secp256k1.verify(signature, fileHash, sender)
 
       if (!isValid) {
         onStage?.(ERROR_MESSAGES.SIGNATURE_VERIFY_FAILED)
@@ -685,7 +687,7 @@ export async function streamDecryptWithPrivateKey(options: StreamDecryptOptions)
     cipher.destroy()
     onStage?.('Creating decrypted file...')
 
-    return { file: new Blob(chunks), signatureValid: isValid }
+    return { file: new Blob(chunks as BlobPart[]), signatureValid: isValid }
   } finally {
     if (key) {
       secureClear(key.buffer)
@@ -736,7 +738,7 @@ export async function decryptText(
   }
 
   const encryptedData = base64.decode(base64Data)
-  const file = new File([encryptedData], 'encrypted.txt', { type: 'text/plain' })
+  const file = new File([encryptedData as BlobPart], 'encrypted.txt', { type: 'text/plain' })
   let result: { file: Blob; signatureValid?: boolean }
   if (password) {
     result = await streamCrypto.decrypt.withPassword({ file, password, receiver, sender })

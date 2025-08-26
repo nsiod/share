@@ -10,6 +10,9 @@ const withNextIntl = createNextIntlPlugin({
 const nextConfig: NextConfig = {
   /* config options here */
   output: 'export',
+  // images: {
+  //   unoptimized: true,
+  // },
   webpack: (config) => {
     config.module.rules.push({
       test: /\.worker\.ts$/,

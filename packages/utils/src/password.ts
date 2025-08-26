@@ -1,18 +1,20 @@
+import { subtle, randomUUID, getRandomValues } from "@nsiod/uncrypto"
+
 export async function hashPasswordFn(
   password: string,
   providedSalt?: Uint8Array,
 ): Promise<string> {
   const encoder = new TextEncoder()
   // Use provided salt if available, otherwise generate a new one
-  const salt = providedSalt || crypto.getRandomValues(new Uint8Array(16))
-  const keyMaterial = await crypto.subtle.importKey(
+  const salt = providedSalt ? new Uint8Array(providedSalt) : getRandomValues(new Uint8Array(16))
+  const keyMaterial = await subtle.importKey(
     'raw',
     encoder.encode(password),
     { name: 'PBKDF2' },
     false,
     ['deriveBits', 'deriveKey'],
   )
-  const key = await crypto.subtle.deriveKey(
+  const key = await subtle.deriveKey(
     {
       name: 'PBKDF2',
       salt,
@@ -24,7 +26,7 @@ export async function hashPasswordFn(
     true,
     ['encrypt', 'decrypt'],
   )
-  const exportedKey = (await crypto.subtle.exportKey('raw', key)) as ArrayBuffer
+  const exportedKey = (await subtle.exportKey('raw', key)) as ArrayBuffer
   const hashBuffer = new Uint8Array(exportedKey)
   const hashArray = Array.from(hashBuffer)
   const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
