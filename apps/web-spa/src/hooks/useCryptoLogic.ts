@@ -247,7 +247,7 @@ export const useCryptoLogic = ({
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'An error occurred during processing')
     } finally {
-      updateState({ isProcessing: false })
+      updateState({ isProcessing: false, progress: 0 })
     }
   }, [state, updateState, workerRef])
 
