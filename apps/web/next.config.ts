@@ -3,8 +3,8 @@ import createNextIntlPlugin from 'next-intl/plugin'
 
 const withNextIntl = createNextIntlPlugin({
   experimental: {
-    createMessagesDeclaration: './messages/en.json'
-  }
+    createMessagesDeclaration: './messages/en.json',
+  },
 })
 
 const nextConfig: NextConfig = {
@@ -13,17 +13,6 @@ const nextConfig: NextConfig = {
   // images: {
   //   unoptimized: true,
   // },
-  webpack: (config) => {
-    config.module.rules.push({
-      test: /\.worker\.ts$/,
-      loader: 'worker-loader',
-      options: {
-        filename: 'static/[name].[hash].js',
-        publicPath: '/_next/'
-      }
-    })
-    return config
-  }
 }
 
 export default withNextIntl(nextConfig)

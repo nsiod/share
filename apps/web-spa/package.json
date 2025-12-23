@@ -12,7 +12,6 @@
   "scripts": {
     "dev": "vite --port 3001",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
     "preview": "vite preview --port 3001"
   },
   "dependencies": {
@@ -30,20 +29,15 @@
   },
   "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "catalog:dev",
-    "@eslint/js": "catalog:dev",
     "@tailwindcss/vite": "catalog:dev",
     "@types/node": "catalog:dev",
     "@types/react": "catalog:dev",
     "@types/react-dom": "catalog:dev",
     "@vitejs/plugin-react": "catalog:dev",
-    "eslint": "catalog:dev",
-    "eslint-plugin-react-hooks": "catalog:dev",
-    "eslint-plugin-react-refresh": "catalog:dev",
     "globals": "catalog:dev",
     "tailwindcss": "catalog:dev",
     "tw-animate-css": "catalog:dev",
     "typescript": "catalog:dev",
-    "typescript-eslint": "catalog:dev",
     "vite": "catalog:dev",
     "vite-plugin-html": "catalog:dev",
     "vite-plugin-singlefile": "catalog:dev"
