@@ -8,6 +8,6 @@
     "moduleResolution": "Node",
     "declarationMap": true,
     "target": "ES6",
-    "types": ["node"],
+    "types": ["node"]
   }
 }

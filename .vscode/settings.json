@@ -1,28 +1,36 @@
 {
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit",
-    "source.organizeImports": "never"
+    "quickfix.biome": "explicit",
+    "source.organizeImports.biome": "explicit",
+    "source.fixAll.biome": "explicit"
+    // "source.organizeImports": "explicit",
   },
-  "tailwindCSS.experimental.classRegex": [
-    ["cva\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]?([^\"'`]+)[\"'`]?"],
-    ["cn\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
-  ],
+  "biome.enabled": true,
+  "editor.defaultFormatter": "biomejs.biome",
   "[typescript]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
+    "editor.defaultFormatter": "biomejs.biome"
   },
-  "eslint.workingDirectories": [
-    {
-      "mode": "auto"
-    }
-  ],
-  "tailwindCSS.experimental.configFile": "../apps/web/src/app/globals.css",
-  "i18n-ally.localesPaths": [
-    "apps/web/messages"
-  ],
-  "i18n-ally.namespace": true,
-  "i18n-ally.sourceLanguage": "en",
-  "i18n-ally.displayLanguage": "en",
-  "i18n-ally.enabledFrameworks": ["next-intl"],
+  "[jsonc]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[svelte]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "[astro]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[mdx]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }

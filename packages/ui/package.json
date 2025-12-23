@@ -26,8 +26,8 @@
     "dist/**/*.css"
   ],
   "scripts": {
-    "dev:tsup": "tsup src/index.ts --format esm,cjs --dts --external react,chrome --watch",
-    "build:tsup": "tsup src/index.ts --format esm,cjs --dts --external react,chrome --watch",
+    "build:tsdown": "tsdown",
+    "dev:tsdown": "tsdown --watch",
     "dev": "tsc -w",
     "build": "tsc",
     "typecheck": "tsc --project ./tsconfig.json --noEmit",
@@ -62,7 +62,7 @@
     "@nsiod/share-tsconfig": "workspace:*",
     "@tailwindcss/postcss": "catalog:dev",
     "tailwindcss": "catalog:dev",
-    "tsup": "catalog:dev",
+    "tsdown": "catalog:dev",
     "tw-animate-css": "catalog:dev"
   }
 }
