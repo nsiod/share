@@ -1,15 +1,18 @@
 'use client'
 
-import {
-  isBase58String,
-  validateBase58PublicKey
-} from '@nsiod/share-utils'
+import { isBase58String, validateBase58PublicKey } from '@nsiod/share-utils'
 import Image from 'next/image'
-import { Locale, useTranslations } from 'next-intl'
-import { useEffect, useCallback, use } from 'react'
+import type { Locale } from 'next-intl'
+import { useTranslations } from 'next-intl'
+import { use, useCallback, useEffect } from 'react'
 import { toast } from 'sonner'
 
-import { ActionButtons, CryptoTabs, KeyInputSection, ProcessButton } from '@/components/Home'
+import {
+  ActionButtons,
+  CryptoTabs,
+  KeyInputSection,
+  ProcessButton,
+} from '@/components/Home'
 import HowItWorksSection from '@/components/HowItWorksSection'
 import { useCryptoLogic, useCryptoState, useDragAndDrop } from '@/hooks'
 
@@ -32,7 +35,7 @@ export default function HomePage({ params }: Props) {
     workerRef,
     fileInputRef,
     keyInputRef,
-    detectTimeoutRef
+    detectTimeoutRef,
   } = useCryptoState()
 
   const {
@@ -45,7 +48,7 @@ export default function HomePage({ params }: Props) {
     handleFileSelect,
     handleCopy,
     handleDownload,
-    processInput
+    processInput,
   } = useCryptoLogic({
     state,
     updateState,
@@ -54,26 +57,25 @@ export default function HomePage({ params }: Props) {
     freshKeyPairs,
     refreshKeysFromStorage,
     workerRef,
-    detectTimeoutRef
+    detectTimeoutRef,
   })
 
-  const {
-    handleDragOver,
-    handleDragEnter,
-    handleDragLeave,
-    handleDrop
-  } = useDragAndDrop({
-    updateState,
-    clearState,
-    handleFileSelect
-  })
+  const { handleDragOver, handleDragEnter, handleDragLeave, handleDrop } =
+    useDragAndDrop({
+      updateState,
+      clearState,
+      handleFileSelect,
+    })
 
-  const handleFileInputChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      await handleFileSelect(file)
-    }
-  }, [handleFileSelect])
+  const handleFileInputChange = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0]
+      if (file) {
+        await handleFileSelect(file)
+      }
+    },
+    [handleFileSelect],
+  )
 
   const triggerFileInput = () => {
     fileInputRef.current?.click()
@@ -91,7 +93,9 @@ export default function HomePage({ params }: Props) {
               updateState({ keyInput: pubKey })
             } else {
               // For decrypt mode, find matching key pair and use mnemonic/private key
-              const matchingKeyPair = freshKeyPairs.find(kp => kp.publicKey === pubKey)
+              const matchingKeyPair = freshKeyPairs.find(
+                (kp) => kp.publicKey === pubKey,
+              )
               if (matchingKeyPair) {
                 if (matchingKeyPair.mnemonic) {
                   updateState({ keyInput: matchingKeyPair.mnemonic })
@@ -138,12 +142,11 @@ export default function HomePage({ params }: Props) {
     }
   }, [refreshKeysFromStorage])
 
-  const isProcessButtonDisabled = (
+  const isProcessButtonDisabled =
     (state.inputType === 'file' && !state.selectedFile) ||
     (state.inputType === 'message' && !state.textInput) ||
     !state.keyInput ||
     state.isProcessing
-  )
 
   return (
     <>
@@ -204,7 +207,9 @@ export default function HomePage({ params }: Props) {
                       onKeyInputFocus={handleKeyInputFocus}
                       onKeyInputBlur={handleKeyInputBlur}
                       onKeySelect={handleKeySelect}
-                      keyInputRef={keyInputRef as React.RefObject<HTMLInputElement>}
+                      keyInputRef={
+                        keyInputRef as React.RefObject<HTMLInputElement>
+                      }
                       getMatchedPublicKey={getMatchedPublicKey}
                     />
                   )}
@@ -224,7 +229,9 @@ export default function HomePage({ params }: Props) {
                       inputType={state.inputType}
                       isProcessing={state.isProcessing}
                       onReset={clearState}
-                      onCopy={state.inputType === 'message' ? handleCopy : undefined}
+                      onCopy={
+                        state.inputType === 'message' ? handleCopy : undefined
+                      }
                       onDownload={handleDownload}
                     />
                   )}

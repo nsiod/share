@@ -1,5 +1,5 @@
-import React from 'react';
-import { Toaster } from 'sonner';
+import type React from 'react'
+import { Toaster } from 'sonner'
 import Footer from '@/components/Footer'
 import Header from '@/components/Header'
 import { Providers } from '@/components/Providers'
@@ -11,19 +11,13 @@ const App: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <div className="flex flex-col items-center flex-1">
           <Header />
 
-          <div className="w-full">
-            {children}
-          </div>
+          <div className="w-full">{children}</div>
         </div>
       </main>
       <Footer />
-      <Toaster
-        richColors
-        position="top-right"
-        duration={3000}
-      />
+      <Toaster richColors position="top-right" duration={3000} />
     </Providers>
-  );
-};
+  )
+}
 
-export default App;
+export default App

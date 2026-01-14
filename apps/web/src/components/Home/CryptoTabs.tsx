@@ -1,12 +1,15 @@
-/* eslint-disable no-unused-vars */
-import { Tabs, TabsContent, TabsList, TabsTrigger, Textarea } from '@nsiod/share-ui'
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+  Textarea,
+} from '@nsiod/share-ui'
 import { useTranslations } from 'next-intl'
-import React from 'react'
-
+import type React from 'react'
+import { FileUploadArea } from '@/components/Home'
 import TextInputArea from '@/components/TextInputArea'
-import { FileInfo } from '@/types'
-
-import { FileUploadArea } from './FileUploadArea'
+import type { FileInfo } from '@/types'
 
 interface CryptoTabsProps {
   inputType: 'file' | 'message'
@@ -37,7 +40,7 @@ export const CryptoTabs: React.FC<CryptoTabsProps> = ({
   onDragEnter,
   onDragLeave,
   onDrop,
-  onClearFile
+  onClearFile,
 }) => {
   const tNavigation = useTranslations('navigation')
   const tInput = useTranslations('input')

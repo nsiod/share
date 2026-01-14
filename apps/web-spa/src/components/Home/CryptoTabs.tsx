@@ -1,6 +1,11 @@
-
-import { Tabs, TabsContent, TabsList, TabsTrigger, Textarea } from '@nsiod/share-ui'
-import React from 'react'
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+  Textarea,
+} from '@nsiod/share-ui'
+import type React from 'react'
 
 import TextInputArea from '@/components/TextInputArea'
 import type { FileInfo } from '@/types'
@@ -36,7 +41,7 @@ export const CryptoTabs: React.FC<CryptoTabsProps> = ({
   onDragEnter,
   onDragLeave,
   onDrop,
-  onClearFile
+  onClearFile,
 }) => {
   return (
     <Tabs

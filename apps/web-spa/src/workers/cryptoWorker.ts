@@ -1,4 +1,9 @@
-import { streamCrypto, textCrypto, parseStreamHeader, detect } from '@nsiod/share-utils'
+import {
+  detect,
+  parseStreamHeader,
+  streamCrypto,
+  textCrypto,
+} from '@nsiod/share-utils'
 import { base58 } from '@scure/base'
 import { Buffer } from 'buffer'
 
@@ -16,7 +21,8 @@ interface WorkerInput {
 }
 
 // Clamp progress value between 0 and 100
-const clampProgress = (progress: number): number => Math.min(Math.max(progress, 0), 100)
+const clampProgress = (progress: number): number =>
+  Math.min(Math.max(progress, 0), 100)
 
 // Handle messages in the worker
 self.onmessage = async (e: MessageEvent<WorkerInput>) => {
@@ -29,7 +35,7 @@ self.onmessage = async (e: MessageEvent<WorkerInput>) => {
     publicKey,
     privateKey,
     password,
-    isTextMode
+    isTextMode,
   } = e.data
 
   try {
@@ -49,18 +55,31 @@ self.onmessage = async (e: MessageEvent<WorkerInput>) => {
 
     // Validate inputs based on encryption mode and detection
     if (encryptionMode === 'pubk') {
-      if (mode === 'encrypt' && !publicKey) throw new Error('Public key not provided')
-      if (mode === 'decrypt' && !privateKey) throw new Error('Private key not provided')
-      if (mode === 'decrypt' && (!/^[0-9a-fA-F]+$/.test(privateKey!) || privateKey!.length !== 64)) {
+      if (mode === 'encrypt' && !publicKey)
+        throw new Error('Public key not provided')
+      if (mode === 'decrypt' && !privateKey)
+        throw new Error('Private key not provided')
+      if (
+        mode === 'decrypt' &&
+        (!/^[0-9a-fA-F]+$/.test(privateKey!) || privateKey!.length !== 64)
+      ) {
         throw new Error('Invalid private key format')
       }
       if (mode === 'decrypt' && detection.encryptionType === 'pwd') {
-        throw new Error('Input is password-encrypted, but public key mode selected')
+        throw new Error(
+          'Input is password-encrypted, but public key mode selected',
+        )
       }
     } else if (encryptionMode === 'pwd') {
       if (!password) throw new Error('Password not provided')
-      if (mode === 'decrypt' && (detection.encryptionType === 'pubk' || detection.encryptionType === 'signed')) {
-        throw new Error('Input is public key-encrypted, but password mode selected')
+      if (
+        mode === 'decrypt' &&
+        (detection.encryptionType === 'pubk' ||
+          detection.encryptionType === 'signed')
+      ) {
+        throw new Error(
+          'Input is public key-encrypted, but password mode selected',
+        )
       }
     } else {
       throw new Error('Invalid encryption mode')
@@ -73,21 +92,33 @@ self.onmessage = async (e: MessageEvent<WorkerInput>) => {
       self.postMessage({ progress: 10, stage: 'Preparing text processing...' })
 
       if (mode === 'encrypt') {
-        const receiver = encryptionMode === 'pubk' ? base58.decode(publicKey!) : undefined
-        const result = await textCrypto.encrypt(text, encryptionMode === 'pwd' ? password : undefined, receiver)
+        const receiver =
+          encryptionMode === 'pubk' ? base58.decode(publicKey!) : undefined
+        const result = await textCrypto.encrypt(
+          text,
+          encryptionMode === 'pwd' ? password : undefined,
+          receiver,
+        )
 
         self.postMessage({ progress: 100, stage: 'Complete!' })
         self.postMessage({
           data: {
             data: result.blob,
             base64: result.base64,
-            filename: `encrypted_text_${Date.now()}.enc`
-          }
+            filename: `encrypted_text_${Date.now()}.enc`,
+          },
         })
       } else {
-        const receiver = encryptionMode === 'pubk' && privateKey ? Buffer.from(privateKey, 'hex') : undefined
+        const receiver =
+          encryptionMode === 'pubk' && privateKey
+            ? Buffer.from(privateKey, 'hex')
+            : undefined
         const _password = encryptionMode === 'pwd' ? password : undefined
-        const result = await textCrypto.decrypt(text.trim(), _password, receiver)
+        const result = await textCrypto.decrypt(
+          text.trim(),
+          _password,
+          receiver,
+        )
 
         self.postMessage({ progress: 100, stage: 'Complete!' })
         self.postMessage({
@@ -95,8 +126,8 @@ self.onmessage = async (e: MessageEvent<WorkerInput>) => {
             data: new Blob([result.text], { type: 'text/plain' }),
             base64: result.text,
             filename: `${Date.now()}.txt`,
-            signatureValid: result.signatureValid
-          }
+            signatureValid: result.signatureValid,
+          },
         })
       }
     } else {
@@ -108,23 +139,30 @@ self.onmessage = async (e: MessageEvent<WorkerInput>) => {
 
         const options = {
           file,
-          receiver: encryptionMode === 'pubk' ? base58.decode(publicKey!) : undefined,
+          receiver:
+            encryptionMode === 'pubk' ? base58.decode(publicKey!) : undefined,
           password: encryptionMode === 'pwd' ? password : undefined,
           onProgress: (progress: number) => {
             const scaledProgress = 10 + (clampProgress(progress) / 100) * 85
-            self.postMessage({ progress: Math.min(scaledProgress, 95), stage: 'Encrypting...' })
+            self.postMessage({
+              progress: Math.min(scaledProgress, 95),
+              stage: 'Encrypting...',
+            })
           },
           onStage: (stage: string) => {
             self.postMessage({ progress: undefined, stage })
-          }
+          },
         }
 
-        const result = encryptionMode === 'pubk'
-          ? await streamCrypto.encrypt.withPublicKey(options)
-          : await streamCrypto.encrypt.withPassword(options)
+        const result =
+          encryptionMode === 'pubk'
+            ? await streamCrypto.encrypt.withPublicKey(options)
+            : await streamCrypto.encrypt.withPassword(options)
 
         self.postMessage({ progress: 100, stage: 'Complete!' })
-        self.postMessage({ data: { data: result, filename: `${filename}.enc` } })
+        self.postMessage({
+          data: { data: result, filename: `${filename}.enc` },
+        })
       } else {
         self.postMessage({ progress: 10, stage: 'Reading header...' })
 
@@ -135,9 +173,16 @@ self.onmessage = async (e: MessageEvent<WorkerInput>) => {
           reader.readAsArrayBuffer(file.slice(0, 2048))
         })
 
-        const receiver = encryptionMode === 'pubk' && privateKey ? Buffer.from(privateKey, 'hex') : undefined
+        const receiver =
+          encryptionMode === 'pubk' && privateKey
+            ? Buffer.from(privateKey, 'hex')
+            : undefined
         const _password = encryptionMode === 'pwd' ? password : undefined
-        const parseResult = parseStreamHeader(new Uint8Array(headerData), _password, receiver)
+        const parseResult = parseStreamHeader(
+          new Uint8Array(headerData),
+          _password,
+          receiver,
+        )
         if (!parseResult) {
           throw new Error('Failed to parse stream header')
         }
@@ -151,16 +196,20 @@ self.onmessage = async (e: MessageEvent<WorkerInput>) => {
           password: _password,
           onProgress: (progress: number) => {
             const scaledProgress = 20 + (clampProgress(progress) / 100) * 75
-            self.postMessage({ progress: Math.min(scaledProgress, 95), stage: 'Decrypting...' })
+            self.postMessage({
+              progress: Math.min(scaledProgress, 95),
+              stage: 'Decrypting...',
+            })
           },
           onStage: (stage: string) => {
             self.postMessage({ progress: undefined, stage })
-          }
+          },
         }
 
-        const result = encryptionMode === 'pubk'
-          ? await streamCrypto.decrypt.withPrivateKey(options)
-          : await streamCrypto.decrypt.withPassword(options)
+        const result =
+          encryptionMode === 'pubk'
+            ? await streamCrypto.decrypt.withPrivateKey(options)
+            : await streamCrypto.decrypt.withPassword(options)
 
         self.postMessage({ progress: 100, stage: 'Complete!' })
         const outputExtension = header.e || 'bin'
@@ -170,12 +219,14 @@ self.onmessage = async (e: MessageEvent<WorkerInput>) => {
             data: result.file,
             filename: outputFilename,
             originalExtension: outputExtension,
-            signatureValid: result.signatureValid
-          }
+            signatureValid: result.signatureValid,
+          },
         })
       }
     }
   } catch (error) {
-    self.postMessage({ error: error instanceof Error ? error.message : 'An error occurred' })
+    self.postMessage({
+      error: error instanceof Error ? error.message : 'An error occurred',
+    })
   }
 }

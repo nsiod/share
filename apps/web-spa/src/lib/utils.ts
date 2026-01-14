@@ -8,7 +8,7 @@ export function formatFileSize(bytes: number) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
 
-export const generateTimestamp = () => +new Date()
+export const generateTimestamp = () => Date.now()
 
 export function getFilenameWithoutExtension(filename: string) {
   const parts = filename.split('.')
@@ -18,7 +18,7 @@ export function getFilenameWithoutExtension(filename: string) {
 export const generateDownloadFilename = (
   inputType: 'file' | 'message',
   fileInfo: FileInfo | null,
-  processMode: 'encrypt' | 'decrypt' | null
+  processMode: 'encrypt' | 'decrypt' | null,
 ) => {
   const timestamp = generateTimestamp()
 

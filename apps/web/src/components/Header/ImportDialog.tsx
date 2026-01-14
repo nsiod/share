@@ -1,13 +1,12 @@
-/* eslint-disable no-unused-vars */
-import { Button, Label, CustomOtpInput } from '@nsiod/share-ui'
+import { Button, CustomOtpInput, Label } from '@nsiod/share-ui'
 import { verifyPasswordFn } from '@nsiod/share-utils'
 import { ChevronLeft } from 'lucide-react'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
-import { PublicKey, KeyPair } from '@/types'
+import type { KeyPair, PublicKey } from '@/types'
 
 interface ImportDialogProps {
   selectedFile: File | null
@@ -41,20 +40,24 @@ export const ImportDialog = ({
   onCancel,
   setPublicKeys,
   setKeyPairs,
-  setStoredPasswordHash
+  setStoredPasswordHash,
 }: ImportDialogProps) => {
   const t = useTranslations()
 
   const [importPassword, setImportPassword] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
   const [isEncryptedFile, setIsEncryptedFile] = useState(false)
-  const [backupData, setBackupData] = useState<EncryptedBackupFile | BackupData | null>(null)
+  const [backupData, setBackupData] = useState<
+    EncryptedBackupFile | BackupData | null
+  >(null)
   const workerRef = useRef<Worker | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Initialize crypto worker
   useEffect(() => {
-    workerRef.current = new Worker(new URL('../../workers/cryptoWorker.ts', import.meta.url))
+    workerRef.current = new Worker(
+      new URL('../../workers/cryptoWorker.ts', import.meta.url),
+    )
     return () => workerRef.current?.terminate()
   }, [])
 
@@ -87,11 +90,15 @@ export const ImportDialog = ({
           setBackupData(parsedData as EncryptedBackupFile)
         }
         // Check if it's old unencrypted format
-        else if (parsedData.version && parsedData.timestamp && Array.isArray(parsedData.publicKeys) && Array.isArray(parsedData.keyPairs)) {
+        else if (
+          parsedData.version &&
+          parsedData.timestamp &&
+          Array.isArray(parsedData.publicKeys) &&
+          Array.isArray(parsedData.keyPairs)
+        ) {
           setIsEncryptedFile(false)
           setBackupData(parsedData as BackupData)
-        }
-        else {
+        } else {
           throw new Error('Invalid backup file format')
         }
       } catch (error) {
@@ -102,7 +109,7 @@ export const ImportDialog = ({
       }
     }
 
-    analyzeFile()
+    void analyzeFile()
   }, [selectedFile, t])
 
   const handleImport = useCallback(async () => {
@@ -126,7 +133,10 @@ export const ImportDialog = ({
         const encryptedData = backupData as EncryptedBackupFile
 
         // Verify password first
-        const isPasswordValid = await verifyPasswordFn(encryptedData.passwordHash, importPassword)
+        const isPasswordValid = await verifyPasswordFn(
+          encryptedData.passwordHash,
+          importPassword,
+        )
         if (!isPasswordValid) {
           toast.error(t('messages.error.invalidPassword'))
           setIsProcessing(false)
@@ -152,7 +162,7 @@ export const ImportDialog = ({
             encryptionMode: 'pwd',
             text: encryptedData.data,
             password: importPassword,
-            isTextMode: true
+            isTextMode: true,
           })
         })
 
@@ -177,7 +187,7 @@ export const ImportDialog = ({
         setStoredPasswordHash(finalBackupData.passwordHash)
       }
 
-      await new Promise(resolve => setTimeout(resolve, 500))
+      await new Promise((resolve) => setTimeout(resolve, 500))
 
       toast.success(t('messages.success.backupImported'))
 
@@ -185,14 +195,23 @@ export const ImportDialog = ({
       setIsEncryptedFile(false)
       setBackupData(null)
       onImport()
-
     } catch (error) {
       console.error('Import failed:', error)
       toast.error(t('messages.error.failedImportBackup'))
     } finally {
       setIsProcessing(false)
     }
-  }, [selectedFile, backupData, isEncryptedFile, importPassword, setPublicKeys, setKeyPairs, setStoredPasswordHash, onImport, t])
+  }, [
+    selectedFile,
+    backupData,
+    isEncryptedFile,
+    importPassword,
+    setPublicKeys,
+    setKeyPairs,
+    setStoredPasswordHash,
+    onImport,
+    t,
+  ])
 
   // Handle file area click
   const handleFileAreaClick = useCallback(() => {
@@ -205,7 +224,12 @@ export const ImportDialog = ({
   return (
     <div className="p-2 sm:p-4 md:p-6">
       <div className="flex items-center gap-2 mb-3 sm:mb-4">
-        <Button variant="ghost" size="icon" onClick={onCancel} className="h-8 w-8 sm:h-10 sm:w-10">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onCancel}
+          className="h-8 w-8 sm:h-10 sm:w-10"
+        >
           <ChevronLeft className="size-3 sm:size-4" />
         </Button>
         <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">
@@ -215,19 +239,35 @@ export const ImportDialog = ({
 
       <div className="flex justify-center text-center pt-1 sm:pt-2 pb-4 sm:pb-6">
         <div className="w-full sm:w-3/4 bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl backdrop-blur-sm border border-gray-200/50 dark:border-gray-700 p-3 sm:p-4 md:p-6 space-y-3 sm:space-y-4">
-          <input type="file" id="file-input" ref={fileInputRef} className="hidden" accept=".enc,.json" onChange={onFileSelect} />
+          <input
+            type="file"
+            id="file-input"
+            ref={fileInputRef}
+            className="hidden"
+            accept=".enc,.json"
+            onChange={onFileSelect}
+          />
           {!selectedFile ? (
             <div
               className="flex flex-col items-center justify-center p-3 sm:p-6 border-1 border-dashed rounded-md cursor-pointer transition-all py-4 sm:py-6 md:py-8 border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500"
               onClick={handleFileAreaClick}
             >
-              <Image src="/FileText.svg" alt="File Icon" width={32} height={32} className="size-8 sm:size-10 md:size-12 text-blue-500 mx-auto mb-2" />
+              <Image
+                src="/FileText.svg"
+                alt="File Icon"
+                width={32}
+                height={32}
+                className="size-8 sm:size-10 md:size-12 text-blue-500 mx-auto mb-2"
+              />
               <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 sm:mb-4 md:mb-6 px-2">
                 {t('settings.import.description')}
               </p>
               <Button
                 className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm px-3 sm:px-4 py-2"
-                onClick={(e) => { e.stopPropagation(); handleFileAreaClick() }}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleFileAreaClick()
+                }}
               >
                 {t('buttons.selectBackupFile')}
               </Button>
@@ -238,14 +278,23 @@ export const ImportDialog = ({
                 className="flex flex-col items-center justify-center p-3 sm:p-6 bg-gray-100 dark:bg-gray-700 rounded-md py-3 sm:py-4 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                 onClick={handleFileAreaClick}
               >
-                <Image src="/FileTextEnc.svg" alt="File Icon" width={32} height={32} className="size-8 sm:size-10 md:size-12 text-blue-500 mx-auto mb-2" />
+                <Image
+                  src="/FileTextEnc.svg"
+                  alt="File Icon"
+                  width={32}
+                  height={32}
+                  className="size-8 sm:size-10 md:size-12 text-blue-500 mx-auto mb-2"
+                />
                 <p className="text-xs sm:text-sm text-gray-900 dark:text-gray-100 font-medium break-all px-2 text-center">
                   {selectedFile.name}
                 </p>
                 <Button
                   variant="ghost"
                   className="text-blue-600 hover:text-blue-700 text-xs sm:text-sm px-2 py-1"
-                  onClick={(e) => { e.stopPropagation(); handleFileAreaClick() }}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleFileAreaClick()
+                  }}
                 >
                   {t('buttons.changeFile')}
                 </Button>
@@ -253,7 +302,10 @@ export const ImportDialog = ({
 
               {isEncryptedFile && (
                 <div className="space-y-2 sm:space-y-3">
-                  <Label htmlFor="import-password" className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                  <Label
+                    htmlFor="import-password"
+                    className="text-sm font-medium text-gray-900 dark:text-gray-100"
+                  >
                     {t('settings.import.password')}
                   </Label>
                   <div className="flex justify-center min-w-max">
@@ -285,7 +337,12 @@ export const ImportDialog = ({
           </Button>
           <Button
             className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white order-1 sm:order-2 text-sm py-2.5"
-            disabled={!selectedFile || !backupData || (isEncryptedFile && importPassword.length !== 6) || isProcessing}
+            disabled={
+              !selectedFile ||
+              !backupData ||
+              (isEncryptedFile && importPassword.length !== 6) ||
+              isProcessing
+            }
             onClick={handleImport}
           >
             {isProcessing ? t('processing.importing') : t('buttons.import')}

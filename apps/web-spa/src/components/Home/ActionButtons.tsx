@@ -1,7 +1,6 @@
-
 import { Button, cn } from '@nsiod/share-ui'
-import { RefreshCw, Copy, Download } from 'lucide-react'
-import React from 'react'
+import { Copy, Download, RefreshCw } from 'lucide-react'
+import type React from 'react'
 
 interface ActionButtonsProps {
   inputType: 'file' | 'message'
@@ -16,7 +15,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
   isProcessing,
   onReset,
   onCopy,
-  onDownload
+  onDownload,
 }) => {
   return (
     <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
@@ -48,7 +47,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
         className={cn(
           'w-full text-white rounded-md cursor-pointer h-10 text-sm sm:text-base',
           inputType === 'message' ? 'sm:flex-1' : 'sm:flex-2',
-          'bg-green-600 dark:bg-green-700 hover:bg-green-700 dark:hover:bg-green-800'
+          'bg-green-600 dark:bg-green-700 hover:bg-green-700 dark:hover:bg-green-800',
         )}
       >
         Download
