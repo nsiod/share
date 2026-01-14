@@ -1,9 +1,9 @@
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { STORAGE_KEYS } from '@/constants'
 import { useSecureLocalStorage } from '@/hooks'
 import { secureStorage } from '@/lib/encryption'
-import { CryptoState, PublicKey, KeyPair } from '@/types'
+import type { CryptoState, KeyPair, PublicKey } from '@/types'
 
 export const useCryptoState = () => {
   const [state, setState] = useState<CryptoState>({
@@ -20,7 +20,7 @@ export const useCryptoState = () => {
     isDragOver: false,
     showKeyDropdown: false,
     matchedKeys: [],
-    isKeyInputFocused: false
+    isKeyInputFocused: false,
   })
 
   const workerRef = useRef<Worker | null>(null)
@@ -29,15 +29,20 @@ export const useCryptoState = () => {
   const detectTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   // Load stored keys
-  const [publicKeys, , , isPublicKeysLoaded] = useSecureLocalStorage<PublicKey[]>(STORAGE_KEYS.PUBLIC_KEYS, [])
-  const [keyPairs, , , isKeyPairsLoaded] = useSecureLocalStorage<KeyPair[]>(STORAGE_KEYS.KEY_PAIRS, [])
+  const [publicKeys, , , isPublicKeysLoaded] = useSecureLocalStorage<
+    PublicKey[]
+  >(STORAGE_KEYS.PUBLIC_KEYS, [])
+  const [keyPairs, , , isKeyPairsLoaded] = useSecureLocalStorage<KeyPair[]>(
+    STORAGE_KEYS.KEY_PAIRS,
+    [],
+  )
 
   // Fresh keys state for real-time updates
   const [freshPublicKeys, setFreshPublicKeys] = useState<PublicKey[]>([])
   const [freshKeyPairs, setFreshKeyPairs] = useState<KeyPair[]>([])
 
   const updateState = (updates: Partial<CryptoState>) => {
-    setState(prev => ({ ...prev, ...updates }))
+    setState((prev) => ({ ...prev, ...updates }))
   }
 
   const clearState = useCallback(() => {
@@ -55,7 +60,7 @@ export const useCryptoState = () => {
       isDragOver: false,
       showKeyDropdown: false,
       matchedKeys: [],
-      isKeyInputFocused: false
+      isKeyInputFocused: false,
     })
 
     if (fileInputRef.current) {
@@ -69,8 +74,14 @@ export const useCryptoState = () => {
   // Refresh keys from storage
   const refreshKeysFromStorage = async () => {
     try {
-      const freshPubKeys = await secureStorage.getItem(STORAGE_KEYS.PUBLIC_KEYS, [])
-      const freshKeyPairsData = await secureStorage.getItem(STORAGE_KEYS.KEY_PAIRS, [])
+      const freshPubKeys = await secureStorage.getItem(
+        STORAGE_KEYS.PUBLIC_KEYS,
+        [],
+      )
+      const freshKeyPairsData = await secureStorage.getItem(
+        STORAGE_KEYS.KEY_PAIRS,
+        [],
+      )
       setFreshPublicKeys(freshPubKeys)
       setFreshKeyPairs(freshKeyPairsData)
     } catch (error) {
@@ -88,7 +99,9 @@ export const useCryptoState = () => {
 
   // Initialize worker
   useEffect(() => {
-    workerRef.current = new Worker(new URL('@/workers/cryptoWorker.ts', import.meta.url))
+    workerRef.current = new Worker(
+      new URL('@/workers/cryptoWorker.ts', import.meta.url),
+    )
     return () => workerRef.current?.terminate()
   }, [])
 
@@ -102,6 +115,6 @@ export const useCryptoState = () => {
     workerRef,
     fileInputRef,
     keyInputRef,
-    detectTimeoutRef
+    detectTimeoutRef,
   }
 }

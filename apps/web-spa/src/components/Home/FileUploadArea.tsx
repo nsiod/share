@@ -1,7 +1,7 @@
 import { Button, cn } from '@nsiod/share-ui'
 import { formatFileSize } from '@nsiod/share-utils'
 import { X } from 'lucide-react'
-import React from 'react'
+import type React from 'react'
 
 import type { FileInfo } from '@/types'
 
@@ -24,7 +24,7 @@ export const FileUploadArea: React.FC<FileUploadAreaProps> = ({
   onDragEnter,
   onDragLeave,
   onDrop,
-  onClear
+  onClear,
 }) => {
   if (fileInfo) {
     return (
@@ -66,7 +66,7 @@ export const FileUploadArea: React.FC<FileUploadAreaProps> = ({
         'flex flex-col items-center justify-center p-4 sm:p-6 border-1 border-dashed rounded-md cursor-pointer transition-all py-8 sm:py-12',
         isDragOver
           ? 'border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20'
-          : 'border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500'
+          : 'border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500',
       )}
       onClick={onFileSelect}
       onDragOver={onDragOver}
@@ -81,12 +81,14 @@ export const FileUploadArea: React.FC<FileUploadAreaProps> = ({
         height={36}
         className="w-9 h-9 sm:w-12 sm:h-12 text-gray-400 dark:text-gray-300 mb-2 sm:mb-3"
       />
-      <p className={cn(
-        'text-xs sm:text-sm font-medium text-center',
-        isDragOver
-          ? 'text-blue-700 dark:text-blue-300'
-          : 'text-gray-700 dark:text-gray-200'
-      )}>
+      <p
+        className={cn(
+          'text-xs sm:text-sm font-medium text-center',
+          isDragOver
+            ? 'text-blue-700 dark:text-blue-300'
+            : 'text-gray-700 dark:text-gray-200',
+        )}
+      >
         {isDragOver ? 'Drop your file here!' : 'Drag & Drop Your File'}
       </p>
       <p className="text-xs text-gray-400 dark:text-gray-500">or</p>

@@ -1,10 +1,12 @@
-import {
-  isBase58String,
-  validateBase58PublicKey
-} from '@nsiod/share-utils'
-import { useEffect, useCallback } from 'react'
+import { isBase58String, validateBase58PublicKey } from '@nsiod/share-utils'
+import { useCallback, useEffect } from 'react'
 
-import { ActionButtons, CryptoTabs, KeyInputSection, ProcessButton } from '@/components/Home'
+import {
+  ActionButtons,
+  CryptoTabs,
+  KeyInputSection,
+  ProcessButton,
+} from '@/components/Home'
 import HowItWorksSection from '@/components/HowItWorksSection'
 import { useCryptoLogic, useCryptoState, useDragAndDrop } from '@/hooks'
 
@@ -15,7 +17,7 @@ export default function HomePage() {
     clearState,
     workerRef,
     fileInputRef,
-    detectTimeoutRef
+    detectTimeoutRef,
   } = useCryptoState()
 
   const {
@@ -23,32 +25,31 @@ export default function HomePage() {
     handleFileSelect,
     handleCopy,
     handleDownload,
-    processInput
+    processInput,
   } = useCryptoLogic({
     state,
     updateState,
     clearState,
     workerRef,
-    detectTimeoutRef
+    detectTimeoutRef,
   })
 
-  const {
-    handleDragOver,
-    handleDragEnter,
-    handleDragLeave,
-    handleDrop
-  } = useDragAndDrop({
-    updateState,
-    clearState,
-    handleFileSelect
-  })
+  const { handleDragOver, handleDragEnter, handleDragLeave, handleDrop } =
+    useDragAndDrop({
+      updateState,
+      clearState,
+      handleFileSelect,
+    })
 
-  const handleFileInputChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      await handleFileSelect(file)
-    }
-  }, [handleFileSelect])
+  const handleFileInputChange = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0]
+      if (file) {
+        await handleFileSelect(file)
+      }
+    },
+    [handleFileSelect],
+  )
 
   const triggerFileInput = () => {
     fileInputRef.current?.click()
@@ -77,12 +78,11 @@ export default function HomePage() {
     return () => window.removeEventListener('hashchange', handleHashChange)
   }, [updateState])
 
-  const isProcessButtonDisabled = (
+  const isProcessButtonDisabled =
     (state.inputType === 'file' && !state.selectedFile) ||
     (state.inputType === 'message' && !state.textInput) ||
     !state.keyInput ||
     state.isProcessing
-  )
 
   return (
     <>
@@ -135,7 +135,9 @@ export default function HomePage() {
                     <KeyInputSection
                       processMode={state.processMode}
                       keyInput={state.keyInput}
-                      onKeyInputChange={(value) => updateState({ keyInput: value })}
+                      onKeyInputChange={(value) =>
+                        updateState({ keyInput: value })
+                      }
                     />
                   )}
 
@@ -154,7 +156,9 @@ export default function HomePage() {
                       inputType={state.inputType}
                       isProcessing={state.isProcessing}
                       onReset={clearState}
-                      onCopy={state.inputType === 'message' ? handleCopy : undefined}
+                      onCopy={
+                        state.inputType === 'message' ? handleCopy : undefined
+                      }
                       onDownload={handleDownload}
                     />
                   )}

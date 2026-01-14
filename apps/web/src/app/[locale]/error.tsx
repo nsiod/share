@@ -1,12 +1,12 @@
 'use client'
 
 import {
-  GradientText,
-  ShinyText,
   Button,
   Card,
+  CardContent,
   CardHeader,
-  CardContent
+  GradientText,
+  ShinyText,
 } from '@nsiod/share-ui'
 import { useTranslations } from 'next-intl'
 

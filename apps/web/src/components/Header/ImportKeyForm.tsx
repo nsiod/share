@@ -1,12 +1,11 @@
-/* eslint-disable no-unused-vars */
-import { Button, Label, Input, cn } from '@nsiod/share-ui'
+import { Button, cn, Input, Label } from '@nsiod/share-ui'
 import { deriveKeyPair, validateMnemonic } from '@nsiod/share-utils'
 import { useTranslations } from 'next-intl'
-import { useState, useEffect, useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
 import { validatePublicKey } from '@/lib/key'
-import { KeyPair } from '@/types'
+import type { KeyPair } from '@/types'
 
 interface ImportKeyFormProps {
   keyPair: KeyPair | null
@@ -23,7 +22,7 @@ export const ImportKeyForm = ({
   onPublicKeyChange,
   onMnemonicChange,
   onSave,
-  onCancel
+  onCancel,
 }: ImportKeyFormProps) => {
   const t = useTranslations()
 
@@ -33,40 +32,49 @@ export const ImportKeyForm = ({
   const [isMnemonicValid, setIsMnemonicValid] = useState(false)
 
   // Generate key pair from mnemonic
-  const generateKeyPairFromMnemonic = useCallback(async (mnemonicPhrase: string) => {
-    if (!mnemonicPhrase.trim()) {
-      return
-    }
+  const generateKeyPairFromMnemonic = useCallback(
+    async (mnemonicPhrase: string) => {
+      if (!mnemonicPhrase.trim()) {
+        return
+      }
 
-    setMnemonicError('')
+      setMnemonicError('')
 
-    try {
-      const { publicKey: newPublicKey } = deriveKeyPair(mnemonicPhrase.trim())
-      setPublicKey(newPublicKey)
+      try {
+        const { publicKey: newPublicKey } = deriveKeyPair(mnemonicPhrase.trim())
+        setPublicKey(newPublicKey)
 
-      // Sync to parent component
-      onPublicKeyChange(newPublicKey)
-      onMnemonicChange(mnemonicPhrase.trim())
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : t('messages.error.failedGenerateKeyPair')
-      setMnemonicError(errorMessage)
-      console.error('Generate key pair error:', error)
-      setPublicKey('')
-      onPublicKeyChange('')
-    }
-  }, [onPublicKeyChange, onMnemonicChange, t])
+        // Sync to parent component
+        onPublicKeyChange(newPublicKey)
+        onMnemonicChange(mnemonicPhrase.trim())
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : t('messages.error.failedGenerateKeyPair')
+        setMnemonicError(errorMessage)
+        console.error('Generate key pair error:', error)
+        setPublicKey('')
+        onPublicKeyChange('')
+      }
+    },
+    [onPublicKeyChange, onMnemonicChange, t],
+  )
 
   // Handle mnemonic input change
-  const handleMnemonicChange = useCallback((value: string) => {
-    setMnemonic(value)
-    setMnemonicError('')
+  const handleMnemonicChange = useCallback(
+    (value: string) => {
+      setMnemonic(value)
+      setMnemonicError('')
 
-    // Reset public key when mnemonic changes
-    if (publicKey && value.trim() !== keyPair?.mnemonic) {
-      setPublicKey('')
-      onPublicKeyChange('')
-    }
-  }, [publicKey, keyPair?.mnemonic, onPublicKeyChange])
+      // Reset public key when mnemonic changes
+      if (publicKey && value.trim() !== keyPair?.mnemonic) {
+        setPublicKey('')
+        onPublicKeyChange('')
+      }
+    },
+    [publicKey, keyPair?.mnemonic, onPublicKeyChange],
+  )
 
   // Auto-generate key pair when mnemonic is valid
   useEffect(() => {
@@ -89,7 +97,7 @@ export const ImportKeyForm = ({
     }
 
     if (mnemonic && validateMnemonicPhrase(mnemonic) && !publicKey) {
-      generateKeyPairFromMnemonic(mnemonic)
+      void generateKeyPairFromMnemonic(mnemonic)
     }
   }, [mnemonic, generateKeyPairFromMnemonic, publicKey])
 
@@ -119,7 +127,10 @@ export const ImportKeyForm = ({
     <div className="w-full">
       <div className="w-full space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="mnemonicInput" className="text-sm font-medium text-gray-900 dark:text-gray-100">
+          <Label
+            htmlFor="mnemonicInput"
+            className="text-sm font-medium text-gray-900 dark:text-gray-100"
+          >
             {t('settings.ownerKeys.mnemonicPhrase')}
           </Label>
 
@@ -142,8 +153,8 @@ export const ImportKeyForm = ({
                     mnemonic && isMnemonicValid,
                   // Default state (empty or no validation yet)
                   'border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500 focus:border-blue-500 dark:focus:border-blue-400':
-                    !mnemonic || (!isMnemonicValid && !mnemonic)
-                }
+                    !mnemonic || (!isMnemonicValid && !mnemonic),
+                },
               )}
               placeholder={t('settings.ownerKeys.enterMnemonic')}
             />
@@ -172,7 +183,10 @@ export const ImportKeyForm = ({
         {mnemonic && isMnemonicValid && publicKey && (
           <>
             <div className="space-y-2">
-              <Label htmlFor="generatedPublicKey" className="text-sm font-medium text-gray-900 dark:text-gray-100">
+              <Label
+                htmlFor="generatedPublicKey"
+                className="text-sm font-medium text-gray-900 dark:text-gray-100"
+              >
                 {t('settings.ownerKeys.publicKey')}
               </Label>
               <Input
@@ -192,7 +206,10 @@ export const ImportKeyForm = ({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="keyPairNote" className="text-sm font-medium text-gray-900 dark:text-gray-100">
+              <Label
+                htmlFor="keyPairNote"
+                className="text-sm font-medium text-gray-900 dark:text-gray-100"
+              >
                 {t('input.note')}
               </Label>
               <Input
@@ -218,7 +235,9 @@ export const ImportKeyForm = ({
             disabled={!isMnemonicValid || !publicKey || !mnemonic}
           >
             {/* Show different button text based on state */}
-            {mnemonic && isMnemonicValid && publicKey ? t('buttons.saveKeyPair') : t('buttons.importKey')}
+            {mnemonic && isMnemonicValid && publicKey
+              ? t('buttons.saveKeyPair')
+              : t('buttons.importKey')}
           </Button>
         </div>
       </div>

@@ -9,19 +9,19 @@ import {
   Tabs,
   TabsContent,
   TabsList,
-  TabsTrigger
+  TabsTrigger,
 } from '@nsiod/share-ui'
-import { Settings, Lock, X } from 'lucide-react'
+import { Lock, Settings, X } from 'lucide-react'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
-import { useState, useCallback } from 'react'
+import { useCallback, useState } from 'react'
 
 import { ExternalPublicKeysTab } from '@/components/Header/ExternalPublicKeysTab'
 import { GeneralTab } from '@/components/Header/GeneralTab'
 import { KeysTab } from '@/components/Header/KeysTab'
 import { STORAGE_KEYS } from '@/constants'
 import { useSecureLocalStorage } from '@/hooks'
-import { PublicKey, KeyPair, TabType } from '@/types'
+import type { KeyPair, PublicKey, TabType } from '@/types'
 
 export default function Header() {
   const t = useTranslations()
@@ -31,15 +31,20 @@ export default function Header() {
   const [activeTab, setActiveTab] = useState<TabType>('General')
 
   // Public key management state
-  const [publicKeys, setPublicKeys, removePublicKeys] = useSecureLocalStorage<PublicKey[]>(STORAGE_KEYS.PUBLIC_KEYS, [])
+  const [publicKeys, setPublicKeys, removePublicKeys] = useSecureLocalStorage<
+    PublicKey[]
+  >(STORAGE_KEYS.PUBLIC_KEYS, [])
 
   // Key pair management state
-  const [keyPairs, setKeyPairs, removeKeyPairs] = useSecureLocalStorage<KeyPair[]>(STORAGE_KEYS.KEY_PAIRS, [])
+  const [keyPairs, setKeyPairs, removeKeyPairs] = useSecureLocalStorage<
+    KeyPair[]
+  >(STORAGE_KEYS.KEY_PAIRS, [])
   const [showCreateKeyPair, setShowCreateKeyPair] = useState(false)
   const [editKeyPair, setEditKeyPair] = useState<KeyPair | null>(null)
 
   // Password management state
-  const [storedPasswordHash, setStoredPasswordHash, removePasswordHash] = useSecureLocalStorage<string | null>(STORAGE_KEYS.PASSWORD_HASH, null)
+  const [storedPasswordHash, setStoredPasswordHash, removePasswordHash] =
+    useSecureLocalStorage<string | null>(STORAGE_KEYS.PASSWORD_HASH, null)
   const [showChangePassword, setShowChangePassword] = useState(false)
 
   // Reset all states function
@@ -50,13 +55,16 @@ export default function Header() {
   }, [])
 
   // Tab change handler
-  const handleTabChange = useCallback((tab: string) => {
-    setActiveTab(tab as TabType)
-    resetAllStates()
-    if (tab === 'Security Password' && !storedPasswordHash) {
-      setShowChangePassword(true)
-    }
-  }, [storedPasswordHash, resetAllStates])
+  const handleTabChange = useCallback(
+    (tab: string) => {
+      setActiveTab(tab as TabType)
+      resetAllStates()
+      if (tab === 'Security Password' && !storedPasswordHash) {
+        setShowChangePassword(true)
+      }
+    },
+    [storedPasswordHash, resetAllStates],
+  )
 
   // Dialog close handler
   const handleCloseDialog = useCallback(() => {
@@ -98,12 +106,16 @@ export default function Header() {
       setEditKeyPair,
       showChangePassword,
       setShowChangePassword,
-      setActiveTab
+      setActiveTab,
     }
 
     return (
       <div className="w-full">
-        <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full gap-0">
+        <Tabs
+          value={activeTab}
+          onValueChange={handleTabChange}
+          className="w-full gap-0"
+        >
           <div className="px-6 pt-4 pb-0">
             <TabsList className="grid w-full grid-cols-3 bg-white dark:bg-gray-800 border rounded-lg h-10">
               <TabsTrigger
@@ -129,7 +141,7 @@ export default function Header() {
 
           <TabsContent value="General" className="mt-0 p-0">
             <div className="px-6 py-6">
-              <div className='rounded-lg border-1'>
+              <div className="rounded-lg border-1">
                 <GeneralTab {...tabProps} />
               </div>
             </div>
@@ -173,12 +185,20 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-2 justify-center md:justify-end w-full md:w-auto md:absolute md:right-4 md:top-1/2 md:-translate-y-1/2">
-          <Button variant="ghost" size="icon" className="cursor-pointer" onClick={() => setIsDialogOpen(true)}>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="cursor-pointer"
+            onClick={() => setIsDialogOpen(true)}
+          >
             <Settings className="size-5" />
           </Button>
 
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogContent className="sm:max-w-[640px] max-w-[95vw] max-h-[90vh] overflow-hidden gap-0 p-0" showClose={false}>
+            <DialogContent
+              className="sm:max-w-[640px] max-w-[95vw] max-h-[90vh] overflow-hidden gap-0 p-0"
+              showClose={false}
+            >
               <DialogHeader className="border-b p-4 bg-white dark:bg-gray-900">
                 <div className="flex justify-between items-center">
                   <DialogTitle className="text-lg font-semibold text-gray-900 dark:text-gray-100">

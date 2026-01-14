@@ -1,11 +1,10 @@
-/* eslint-disable no-unused-vars */
 import {
   Button,
+  Input,
+  Label,
   Popover,
   PopoverContent,
   PopoverTrigger,
-  Label,
-  Input
 } from '@nsiod/share-ui'
 import { Pencil } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -27,7 +26,7 @@ export const EditNotePopover = ({
   onNoteChange,
   onSave,
   onCancel,
-  placeholder
+  placeholder,
 }: EditNotePopoverProps) => {
   const t = useTranslations()
 
@@ -42,7 +41,10 @@ export const EditNotePopover = ({
       </PopoverTrigger>
       <PopoverContent className="w-[90vw] sm:w-80">
         <div className="space-y-4">
-          <Label htmlFor="editNote" className="text-sm font-medium text-gray-900 dark:text-gray-100">
+          <Label
+            htmlFor="editNote"
+            className="text-sm font-medium text-gray-900 dark:text-gray-100"
+          >
             {t('settings.editNote')}
           </Label>
           <Input
@@ -57,7 +59,11 @@ export const EditNotePopover = ({
             <Button variant="outline" size="sm" onClick={onCancel}>
               {t('buttons.cancel')}
             </Button>
-            <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white" onClick={onSave}>
+            <Button
+              size="sm"
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+              onClick={onSave}
+            >
               {t('buttons.save')}
             </Button>
           </div>

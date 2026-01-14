@@ -1,6 +1,5 @@
-
 import { Label, PasswordInput } from '@nsiod/share-ui'
-import React from 'react'
+import type React from 'react'
 
 interface KeyInputSectionProps {
   processMode: 'encrypt' | 'decrypt'
@@ -11,7 +10,7 @@ interface KeyInputSectionProps {
 export const KeyInputSection: React.FC<KeyInputSectionProps> = ({
   processMode,
   keyInput,
-  onKeyInputChange
+  onKeyInputChange,
 }) => {
   return (
     <div className="space-y-4">

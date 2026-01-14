@@ -1,7 +1,6 @@
-import { useState, useRef, useCallback, useEffect } from 'react'
-import CryptoWorker from '@/workers/cryptoWorker.ts?worker&inline'
-
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { CryptoState } from '@/types'
+import CryptoWorker from '@/workers/cryptoWorker.ts?worker&inline'
 
 export const useCryptoState = () => {
   const [state, setState] = useState<CryptoState>({
@@ -15,7 +14,7 @@ export const useCryptoState = () => {
     isProcessing: false,
     progress: 0,
     processMode: 'encrypt',
-    isDragOver: false
+    isDragOver: false,
   })
 
   const workerRef = useRef<Worker | null>(null)
@@ -23,7 +22,7 @@ export const useCryptoState = () => {
   const detectTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const updateState = (updates: Partial<CryptoState>) => {
-    setState(prev => ({ ...prev, ...updates }))
+    setState((prev) => ({ ...prev, ...updates }))
   }
 
   const clearState = useCallback(() => {
@@ -38,7 +37,7 @@ export const useCryptoState = () => {
       isProcessing: false,
       progress: 0,
       processMode: 'encrypt',
-      isDragOver: false
+      isDragOver: false,
     })
 
     if (fileInputRef.current) {
@@ -60,7 +59,6 @@ export const useCryptoState = () => {
     clearState,
     workerRef,
     fileInputRef,
-    detectTimeoutRef
+    detectTimeoutRef,
   }
 }
-

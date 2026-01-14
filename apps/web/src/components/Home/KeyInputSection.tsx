@@ -1,13 +1,9 @@
-/* eslint-disable no-unused-vars */
-
-import { Label, Input, PasswordInput } from '@nsiod/share-ui'
+import { Input, Label, PasswordInput } from '@nsiod/share-ui'
 import { ChevronDown } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import React from 'react'
-
-import { PublicKey, KeyPair } from '@/types'
-
-import { KeyInputDropdown } from './KeyInputDropdown'
+import type React from 'react'
+import { KeyInputDropdown } from '@/components/Home'
+import type { KeyPair, PublicKey } from '@/types'
 
 interface KeyInputSectionProps {
   processMode: 'encrypt' | 'decrypt'
@@ -32,7 +28,7 @@ export const KeyInputSection: React.FC<KeyInputSectionProps> = ({
   onKeyInputBlur,
   onKeySelect,
   keyInputRef,
-  getMatchedPublicKey
+  getMatchedPublicKey,
 }) => {
   const tInput = useTranslations('input')
 
@@ -40,7 +36,9 @@ export const KeyInputSection: React.FC<KeyInputSectionProps> = ({
     <div className="space-y-4">
       <div className="space-y-2 relative">
         <Label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200">
-          {processMode === 'encrypt' ? tInput('publicKey') : tInput('privateKey')}
+          {processMode === 'encrypt'
+            ? tInput('publicKey')
+            : tInput('privateKey')}
         </Label>
         <div className="relative">
           {processMode === 'encrypt' ? (

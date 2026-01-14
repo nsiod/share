@@ -1,27 +1,27 @@
 import {
   Button,
+  CustomOtpInput,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  Label,
   Popover,
   PopoverContent,
   PopoverTrigger,
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-  Label,
-  CustomOtpInput
 } from '@nsiod/share-ui'
-import { hashPasswordFn, downloadFile } from '@nsiod/share-utils'
+import { downloadFile, hashPasswordFn } from '@nsiod/share-utils'
 import { Info } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { useCallback, useState, useRef, useEffect } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 import pageJson from '@/../package.json'
 import { LanguageSelector } from '@/components/LanguageSelector'
 import { ThemeSelector } from '@/components/ThemeSelector'
-import { PublicKey, KeyPair } from '@/types'
+import type { KeyPair, PublicKey } from '@/types'
 
 interface GeneralTabProps {
   publicKeys: PublicKey[]
@@ -46,7 +46,7 @@ export const GeneralTab = ({
   keyPairs,
   removeKeyPairs,
   storedPasswordHash,
-  removePasswordHash
+  removePasswordHash,
 }: GeneralTabProps) => {
   const t = useTranslations()
 
@@ -58,7 +58,9 @@ export const GeneralTab = ({
 
   // Initialize crypto worker
   useEffect(() => {
-    workerRef.current = new Worker(new URL('@/workers/cryptoWorker.ts', import.meta.url))
+    workerRef.current = new Worker(
+      new URL('@/workers/cryptoWorker.ts', import.meta.url),
+    )
     return () => workerRef.current?.terminate()
   }, [])
 
@@ -82,7 +84,7 @@ export const GeneralTab = ({
       timestamp: new Date().toISOString(),
       publicKeys,
       keyPairs,
-      passwordHash: storedPasswordHash
+      passwordHash: storedPasswordHash,
     }
   }, [publicKeys, keyPairs, storedPasswordHash])
 
@@ -125,7 +127,7 @@ export const GeneralTab = ({
           encryptionMode: 'pwd',
           text: jsonData,
           password: exportPassword,
-          isTextMode: true
+          isTextMode: true,
         })
       })
 
@@ -133,10 +135,12 @@ export const GeneralTab = ({
       const exportObject = {
         data: encryptedResult.base64, // Use encrypted base64 string from cryptoWorker
         passwordHash: hashedPassword,
-        version: pageJson.version
+        version: pageJson.version,
       }
 
-      const blob = new Blob([JSON.stringify(exportObject)], { type: 'application/json' })
+      const blob = new Blob([JSON.stringify(exportObject)], {
+        type: 'application/json',
+      })
       const fileName = `vault_backup_${new Date().toISOString().split('T')[0]}.enc`
       downloadFile(blob, fileName)
 
@@ -153,19 +157,25 @@ export const GeneralTab = ({
 
   return (
     <div className="">
-      <ThemeSelector className='px-4' />
-      <LanguageSelector className='px-4' />
+      <ThemeSelector className="px-4" />
+      <LanguageSelector className="px-4" />
 
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 py-3 sm:py-4 gap-2 sm:gap-0">
         <div className="pr-4">
-          <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">{t('settings.general.resetAccount.title')}</h3>
+          <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">
+            {t('settings.general.resetAccount.title')}
+          </h3>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             {t('settings.general.resetAccount.description')}
           </p>
         </div>
         <Popover open={isResetPopoverOpen} onOpenChange={setIsResetPopoverOpen}>
           <PopoverTrigger asChild>
-            <Button variant="destructive" size="sm" className="w-full sm:w-auto">
+            <Button
+              variant="destructive"
+              size="sm"
+              className="w-full sm:w-auto"
+            >
               {t('buttons.reset')}
             </Button>
           </PopoverTrigger>
@@ -183,7 +193,11 @@ export const GeneralTab = ({
                 {t('settings.general.resetAccount.confirmDescription')}
               </p>
               <div className="flex justify-end gap-2 sm:gap-3">
-                <Button variant="outline" size="sm" onClick={() => setIsResetPopoverOpen(false)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsResetPopoverOpen(false)}
+                >
                   {t('buttons.cancel')}
                 </Button>
                 <Button variant="destructive" size="sm" onClick={handleReset}>
@@ -207,7 +221,9 @@ export const GeneralTab = ({
 
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="export-password">{t('settings.export.password')}</Label>
+              <Label htmlFor="export-password">
+                {t('settings.export.password')}
+              </Label>
               <CustomOtpInput
                 length={6}
                 value={exportPassword}
@@ -218,7 +234,10 @@ export const GeneralTab = ({
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsExportDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setIsExportDialogOpen(false)}
+            >
               {t('buttons.cancel')}
             </Button>
             <Button

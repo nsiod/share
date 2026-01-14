@@ -1,11 +1,6 @@
 'use client'
 
-import {
-  Label,
-  RadioGroup,
-  RadioGroupItem,
-  cn
-} from '@nsiod/share-ui'
+import { cn, Label, RadioGroup, RadioGroupItem } from '@nsiod/share-ui'
 import { useTranslations } from 'next-intl'
 import { useTheme } from 'next-themes'
 
@@ -20,16 +15,24 @@ export function ThemeSelector({ className }: ThemeSelectorProps) {
   const themes = [
     { value: 'system', label: t('themes.system') },
     { value: 'light', label: t('themes.light') },
-    { value: 'dark', label: t('themes.dark') }
+    { value: 'dark', label: t('themes.dark') },
   ]
 
   return (
-    <div className={cn(
-      'flex flex-col sm:flex-row items-start sm:items-center justify-between py-3 sm:py-4 border-b border-gray-200 dark:border-gray-700 gap-2 sm:gap-0',
-      className
-    )}>
-      <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">{t('theme')}</h3>
-      <RadioGroup value={theme} onValueChange={setTheme} className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+    <div
+      className={cn(
+        'flex flex-col sm:flex-row items-start sm:items-center justify-between py-3 sm:py-4 border-b border-gray-200 dark:border-gray-700 gap-2 sm:gap-0',
+        className,
+      )}
+    >
+      <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">
+        {t('theme')}
+      </h3>
+      <RadioGroup
+        value={theme}
+        onValueChange={setTheme}
+        className="flex flex-col sm:flex-row gap-3 sm:gap-4"
+      >
         {themes.map((themeOption) => (
           <div key={themeOption.value} className="flex items-center space-x-2">
             <RadioGroupItem

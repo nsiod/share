@@ -25,7 +25,7 @@ export const EmptyState = ({
   primaryButtonText,
   secondaryButtonText,
   onPrimaryClick,
-  onSecondaryClick
+  onSecondaryClick,
 }: EmptyStateProps) => (
   <div className="flex flex-col items-center pt-10 pb-20">
     <Image
@@ -38,7 +38,7 @@ export const EmptyState = ({
     <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-4 sm:mb-6 text-center">
       {description}
     </p>
-    
+
     {showDualButtons ? (
       <div className="flex gap-3">
         <Button
@@ -56,7 +56,8 @@ export const EmptyState = ({
         </Button>
       </div>
     ) : (
-      buttonText && onButtonClick && (
+      buttonText &&
+      onButtonClick && (
         <Button
           className="bg-blue-600 hover:bg-blue-700 text-white"
           onClick={onButtonClick}
