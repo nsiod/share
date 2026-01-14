@@ -1,8 +1,8 @@
+import { bytesToUtf8 } from '@noble/ciphers/utils.js'
 import { base58 } from '@scure/base'
 import { HDKey } from '@scure/bip32'
 import * as bip39 from '@scure/bip39'
-import { wordlist } from '@scure/bip39/wordlists/english'
-import { bytesToUtf8 } from '@noble/ciphers/utils'
+import { wordlist } from '@scure/bip39/wordlists/english.js'
 
 // Default derivation path for key generation
 // eslint-disable-next-line quotes
@@ -27,7 +27,9 @@ const readFileAsArrayBuffer = (file: File | Blob): Promise<ArrayBuffer> => {
 }
 
 // Identify encryption mode from file
-export const identifyEncryptionMode = async (file: File): Promise<'pubk' | 'pwd' | 'unknown'> => {
+export const identifyEncryptionMode = async (
+  file: File,
+): Promise<'pubk' | 'pwd' | 'unknown'> => {
   try {
     const buffer = await readFileAsArrayBuffer(file.slice(0, 3))
     const data = new Uint8Array(buffer)
@@ -65,7 +67,9 @@ export const generateMnemonic = (strength: number = 128): string => {
   try {
     return bip39.generateMnemonic(wordlist, strength)
   } catch (error) {
-    throw new Error(`Failed to generate mnemonic: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    throw new Error(
+      `Failed to generate mnemonic: ${error instanceof Error ? error.message : 'Unknown error'}`,
+    )
   }
 }
 
@@ -74,7 +78,9 @@ export const generateMnemonic = (strength: number = 128): string => {
  * @param mnemonic - The mnemonic phrase to validate
  * @returns Validation result with validity status and error message
  */
-export const validateMnemonic = (mnemonic: string): {
+export const validateMnemonic = (
+  mnemonic: string,
+): {
   isValid: boolean
   error?: string
   wordCount?: number
@@ -87,20 +93,23 @@ export const validateMnemonic = (mnemonic: string): {
   // Trim and normalize whitespace
   const trimmedMnemonic = mnemonic.trim().replace(/\s+/g, ' ')
   if (!trimmedMnemonic) {
-    return { isValid: false, error: 'Mnemonic cannot be empty or whitespace only' }
+    return {
+      isValid: false,
+      error: 'Mnemonic cannot be empty or whitespace only',
+    }
   }
 
   // Check word count
   const words = trimmedMnemonic.split(' ')
   const wordCount = words.length
-  
+
   // Valid mnemonic lengths: 12, 15, 18, 21, 24 words
   const validLengths = [12, 15, 18, 21, 24]
   if (!validLengths.includes(wordCount)) {
     return {
       isValid: false,
       error: `Invalid mnemonic length. Expected 12, 15, 18, 21, or 24 words, got ${wordCount} words`,
-      wordCount
+      wordCount,
     }
   }
 
@@ -109,8 +118,9 @@ export const validateMnemonic = (mnemonic: string): {
     if (!isValid) {
       return {
         isValid: false,
-        error: 'Invalid mnemonic phrase. Please check the word spelling and order',
-        wordCount
+        error:
+          'Invalid mnemonic phrase. Please check the word spelling and order',
+        wordCount,
       }
     }
 
@@ -119,7 +129,7 @@ export const validateMnemonic = (mnemonic: string): {
     return {
       isValid: false,
       error: `Failed to validate mnemonic: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      wordCount
+      wordCount,
     }
   }
 }
@@ -130,16 +140,24 @@ export const validateMnemonic = (mnemonic: string): {
  * @param passphrase - Optional passphrase for additional security
  * @returns Seed bytes as Uint8Array
  */
-export const mnemonicToSeed = (mnemonic: string, passphrase?: string): Uint8Array => {
+export const mnemonicToSeed = (
+  mnemonic: string,
+  passphrase?: string,
+): Uint8Array => {
   const validation = validateMnemonic(mnemonic)
   if (!validation.isValid) {
     throw new Error(validation.error || 'Invalid mnemonic phrase')
   }
 
   try {
-    return bip39.mnemonicToSeedSync(mnemonic.trim().replace(/\s+/g, ' '), passphrase)
+    return bip39.mnemonicToSeedSync(
+      mnemonic.trim().replace(/\s+/g, ' '),
+      passphrase,
+    )
   } catch (error) {
-    throw new Error(`Failed to convert mnemonic to seed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    throw new Error(
+      `Failed to convert mnemonic to seed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+    )
   }
 }
 
@@ -154,17 +172,19 @@ export const deriveKeyPair = (mnemonic: string) => {
     const seed = mnemonicToSeed(mnemonic)
     const masterNode = HDKey.fromMasterSeed(seed)
     const key = masterNode.derive(DEFAULT_DERIVATION_PATH)
-    
+
     if (!key.privateKey || !key.publicKey) {
       throw new Error('Failed to derive key pair')
     }
-    
+
     return {
       privateKey: Buffer.from(key.privateKey).toString('hex'),
-      publicKey: base58.encode(key.publicKey)
+      publicKey: base58.encode(key.publicKey),
     }
   } catch (error) {
-    throw new Error(`Failed to derive key pair: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    throw new Error(
+      `Failed to derive key pair: ${error instanceof Error ? error.message : 'Unknown error'}`,
+    )
   }
 }
 
@@ -186,17 +206,28 @@ export function validateBase58PublicKey(key: string): {
   // Trim whitespace
   const trimmedKey = key.trim()
   if (!trimmedKey) {
-    return { isValid: false, error: 'Public key cannot be empty or whitespace only' }
+    return {
+      isValid: false,
+      error: 'Public key cannot be empty or whitespace only',
+    }
   }
 
   // Check length range (Base58 encoded 33 bytes typically 44-50 characters)
   if (trimmedKey.length < 40 || trimmedKey.length > 60) {
-    return { isValid: false, error: 'Invalid public key length. Expected Base58 encoded string length between 40-60 characters' }
+    return {
+      isValid: false,
+      error:
+        'Invalid public key length. Expected Base58 encoded string length between 40-60 characters',
+    }
   }
 
   // Check if it matches Base58 character set (Bitcoin Base58 charset)
   if (!/^[1-9A-HJ-NP-Za-km-z]+$/.test(trimmedKey)) {
-    return { isValid: false, error: 'Invalid public key format. Must contain only Base58 characters (excluding 0, O, I, l)' }
+    return {
+      isValid: false,
+      error:
+        'Invalid public key format. Must contain only Base58 characters (excluding 0, O, I, l)',
+    }
   }
 
   try {
@@ -204,11 +235,11 @@ export function validateBase58PublicKey(key: string): {
 
     // Check decoded length
     // 33 bytes: compressed format public key
-    // 65 bytes: uncompressed format public key  
+    // 65 bytes: uncompressed format public key
     if (pubKeyBytes.length !== 33 && pubKeyBytes.length !== 65) {
       return {
         isValid: false,
-        error: `Invalid public key length. Expected 33 bytes (compressed) or 65 bytes (uncompressed), got ${pubKeyBytes.length} bytes`
+        error: `Invalid public key length. Expected 33 bytes (compressed) or 65 bytes (uncompressed), got ${pubKeyBytes.length} bytes`,
       }
     }
 
@@ -218,7 +249,8 @@ export function validateBase58PublicKey(key: string): {
       if (prefix !== 0x02 && prefix !== 0x03) {
         return {
           isValid: false,
-          error: 'Invalid compressed public key prefix. Must start with 0x02 or 0x03'
+          error:
+            'Invalid compressed public key prefix. Must start with 0x02 or 0x03',
         }
       }
     }
@@ -229,7 +261,7 @@ export function validateBase58PublicKey(key: string): {
       if (prefix !== 0x04) {
         return {
           isValid: false,
-          error: 'Invalid uncompressed public key prefix. Must start with 0x04'
+          error: 'Invalid uncompressed public key prefix. Must start with 0x04',
         }
       }
     }
@@ -238,7 +270,7 @@ export function validateBase58PublicKey(key: string): {
   } catch (error) {
     return {
       isValid: false,
-      error: `Failed to decode Base58 public key: ${error instanceof Error ? error.message : 'Unknown error'}`
+      error: `Failed to decode Base58 public key: ${error instanceof Error ? error.message : 'Unknown error'}`,
     }
   }
 }
@@ -253,7 +285,7 @@ export function validateBase58PublicKey(key: string): {
 export const sliceAddress = (
   address?: `0x${string}` | string,
   startLength: number = 3,
-  endLength: number = 4
+  endLength: number = 4,
 ) => {
   if (!address) return ''
 
