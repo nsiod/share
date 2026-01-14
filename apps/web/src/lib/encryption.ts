@@ -1,14 +1,14 @@
 // Check if string is valid Base64
 const isBase64 = (str: string): boolean => {
   if (!str || str.length === 0) return false
-  
+
   // Basic Base64 pattern check
   const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/
   if (!base64Regex.test(str)) return false
-  
+
   // Check if length is valid for Base64 (must be multiple of 4)
   if (str.length % 4 !== 0) return false
-  
+
   try {
     atob(str)
     return true
@@ -57,7 +57,7 @@ export const secureStorage = {
       if (!storedValue) {
         return defaultValue
       }
-      
+
       // Check if it looks like Base64 encoded data
       if (isBase64(storedValue)) {
         try {
@@ -98,7 +98,7 @@ export const secureStorage = {
     try {
       const storedValue = localStorage.getItem(key)
       if (!storedValue) return false
-      
+
       // Check if it's valid Base64 encoded data
       if (isBase64(storedValue)) {
         try {
@@ -123,7 +123,7 @@ export const secureStorage = {
 
   // Clear all corrupted data (utility function)
   clearCorruptedData: (keys: string[]): void => {
-    keys.forEach(key => {
+    keys.forEach((key) => {
       try {
         const storedValue = localStorage.getItem(key)
         if (storedValue && isBase64(storedValue)) {
@@ -137,5 +137,5 @@ export const secureStorage = {
         // Silently ignore errors during cleanup
       }
     })
-  }
+  },
 }

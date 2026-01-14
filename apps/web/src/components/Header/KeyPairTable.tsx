@@ -2,27 +2,27 @@
 /* eslint-disable no-unused-vars */
 import {
   Button,
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+  Input,
+  Label,
   Popover,
   PopoverContent,
   PopoverTrigger,
-  Label,
-  Input,
   Table,
-  TableHeader,
-  TableRow,
-  TableHead,
   TableBody,
   TableCell,
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger
+  TableHead,
+  TableHeader,
+  TableRow,
 } from '@nsiod/share-ui'
 import { downloadFile } from '@nsiod/share-utils'
-import { Copy, Pencil, Trash2, Info, Link, Download, Eye } from 'lucide-react'
+import { Copy, Download, Eye, Info, Link, Pencil, Trash2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 
-import { KeyPair } from '@/types'
+import type { KeyPair } from '@/types'
 
 interface KeyPairTableProps {
   keyPairs: KeyPair[]
@@ -39,7 +39,7 @@ export const KeyPairTable = ({
   onCopyMnemonic,
   onEditNote,
   onDelete,
-  onSaveNote
+  onSaveNote,
 }: KeyPairTableProps) => {
   const t = useTranslations()
 
@@ -117,18 +117,31 @@ export const KeyPairTable = ({
       <Table className="table-fixed w-full">
         <TableHeader>
           <TableRow>
-            <TableHead className="p-2 sm:p-3 text-left" style={{ width: '45%' }}>
+            <TableHead
+              className="p-2 sm:p-3 text-left"
+              style={{ width: '45%' }}
+            >
               {t('settings.ownerKeys.publicKey')}
             </TableHead>
-            <TableHead className="p-2 sm:p-3 text-left" style={{ width: '20%' }}>
+            <TableHead
+              className="p-2 sm:p-3 text-left"
+              style={{ width: '20%' }}
+            >
               {t('input.note')}
             </TableHead>
-            <TableHead className="p-2 sm:p-3 text-left" style={{ width: '25%' }}></TableHead>
+            <TableHead
+              className="p-2 sm:p-3 text-left"
+              style={{ width: '25%' }}
+            ></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {keyPairs.map((keyPair, index) => (
-            <TableRow key={index} className="border-b border-gray-200 dark:border-gray-600 text-gray-500 font-normal">
+            <TableRow
+              // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholders don't need stable keys
+              key={index}
+              className="border-b border-gray-200 dark:border-gray-600 text-gray-500 font-normal"
+            >
               <TableCell className="p-2 sm:p-3" style={{ width: '45%' }}>
                 <HoverCard>
                   <HoverCardTrigger asChild>
@@ -138,7 +151,7 @@ export const KeyPairTable = ({
                       </span>
                     </div>
                   </HoverCardTrigger>
-                  <HoverCardContent className='w-full'>
+                  <HoverCardContent className="w-full">
                     <div className="flex items-center gap-2">
                       <span className="font-mono text-xs break-all flex-1">
                         {keyPair.publicKey}
@@ -152,15 +165,26 @@ export const KeyPairTable = ({
                   <span className="truncate" title={keyPair.note}>
                     {keyPair.note || '---'}
                   </span>
-                  <Popover open={isNotePopoverOpen && editingIndex === index} onOpenChange={(open) => !open && handleCancelNote()}>
+                  <Popover
+                    open={isNotePopoverOpen && editingIndex === index}
+                    onOpenChange={(open) => !open && handleCancelNote()}
+                  >
                     <PopoverTrigger asChild>
-                      <Button variant="ghost" size="icon" className="flex-shrink-0" onClick={() => handleEditNote(keyPair, index)}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="flex-shrink-0"
+                        onClick={() => handleEditNote(keyPair, index)}
+                      >
                         <Pencil className="size-4" />
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-[90vw] sm:w-80">
                       <div className="space-y-4">
-                        <Label htmlFor="editKeyPairNote" className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                        <Label
+                          htmlFor="editKeyPairNote"
+                          className="text-sm font-medium text-gray-900 dark:text-gray-100"
+                        >
                           {t('settings.editNote')}
                         </Label>
                         <Input
@@ -172,10 +196,18 @@ export const KeyPairTable = ({
                           placeholder={t('input.addNote')}
                         />
                         <div className="flex justify-end gap-2">
-                          <Button variant="outline" size="sm" onClick={handleCancelNote}>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleCancelNote}
+                          >
                             {t('buttons.cancel')}
                           </Button>
-                          <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSaveNote}>
+                          <Button
+                            size="sm"
+                            className="bg-blue-600 hover:bg-blue-700 text-white"
+                            onClick={handleSaveNote}
+                          >
                             {t('buttons.save')}
                           </Button>
                         </div>
@@ -186,15 +218,31 @@ export const KeyPairTable = ({
               </TableCell>
               <TableCell className="p-2 sm:p-3" style={{ width: '25%' }}>
                 <div className="flex items-center">
-                  <Button variant="ghost" size="icon" onClick={() => onCopyPublic(keyPair.publicKey)}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => onCopyPublic(keyPair.publicKey)}
+                  >
                     <Copy className="size-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" onClick={() => handleLink(keyPair.publicKey)}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleLink(keyPair.publicKey)}
+                  >
                     <Link className="size-4" />
                   </Button>
-                  <Popover open={isMnemonicPopoverOpen && editingIndex === index} onOpenChange={(open) => !open && handleCloseMnemonic()}>
+                  <Popover
+                    open={isMnemonicPopoverOpen && editingIndex === index}
+                    onOpenChange={(open) => !open && handleCloseMnemonic()}
+                  >
                     <PopoverTrigger asChild>
-                      <Button variant="ghost" size="icon" onClick={() => handleViewMnemonic(index)} disabled={!keyPair.mnemonic}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleViewMnemonic(index)}
+                        disabled={!keyPair.mnemonic}
+                      >
                         <Eye className="size-4 sm:size-5" />
                       </Button>
                     </PopoverTrigger>
@@ -213,12 +261,22 @@ export const KeyPairTable = ({
                           <div className="space-y-3">
                             <div className="p-2 sm:p-3 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 rounded-md border border-blue-200 dark:border-blue-800">
                               <div className="grid grid-cols-3 gap-2 text-sm">
-                                {keyPair.mnemonic.split(' ').map((word, wordIndex) => (
-                                  <div key={wordIndex} className="flex items-center gap-1 p-1 sm:p-1.5 bg-white dark:bg-gray-800 rounded text-xs">
-                                    <span className="text-gray-400 font-mono w-4 text-right text-xs">{wordIndex + 1}</span>
-                                    <span className="font-mono text-gray-900 dark:text-gray-100 text-xs truncate">{word}</span>
-                                  </div>
-                                ))}
+                                {keyPair.mnemonic
+                                  .split(' ')
+                                  .map((word, wordIndex) => (
+                                    <div
+                                      // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholders don't need stable keys
+                                      key={wordIndex}
+                                      className="flex items-center gap-1 p-1 sm:p-1.5 bg-white dark:bg-gray-800 rounded text-xs"
+                                    >
+                                      <span className="text-gray-400 font-mono w-4 text-right text-xs">
+                                        {wordIndex + 1}
+                                      </span>
+                                      <span className="font-mono text-gray-900 dark:text-gray-100 text-xs truncate">
+                                        {word}
+                                      </span>
+                                    </div>
+                                  ))}
                               </div>
                             </div>
 
@@ -233,7 +291,9 @@ export const KeyPairTable = ({
                               <Button
                                 variant="default"
                                 size="sm"
-                                onClick={() => onCopyMnemonic(keyPair.mnemonic!)}
+                                onClick={() =>
+                                  onCopyMnemonic(keyPair.mnemonic!)
+                                }
                                 className="bg-green-600 dark:bg-green-700 hover:bg-green-700 dark:hover:bg-green-800 text-white rounded-md cursor-pointer text-xs"
                               >
                                 {t('buttons.copy')}
@@ -242,7 +302,12 @@ export const KeyPairTable = ({
                               <Button
                                 variant="default"
                                 size="sm"
-                                onClick={() => handleDownloadMnemonic(keyPair.mnemonic!, index)}
+                                onClick={() =>
+                                  handleDownloadMnemonic(
+                                    keyPair.mnemonic!,
+                                    index,
+                                  )
+                                }
                                 className="bg-green-600 dark:bg-green-700 hover:bg-green-700 dark:hover:bg-green-800 text-white rounded-md cursor-pointer text-xs"
                               >
                                 {t('buttons.download')}
@@ -256,9 +321,16 @@ export const KeyPairTable = ({
                   </Popover>
 
                   {/* Delete Button */}
-                  <Popover open={isDeletePopoverOpen && editingIndex === index} onOpenChange={(open) => !open && handleCancelDelete()}>
+                  <Popover
+                    open={isDeletePopoverOpen && editingIndex === index}
+                    onOpenChange={(open) => !open && handleCancelDelete()}
+                  >
                     <PopoverTrigger asChild>
-                      <Button variant="ghost" size="icon" onClick={() => handleDeleteClick(index)}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleDeleteClick(index)}
+                      >
                         <Trash2 className="size-4 sm:size-5" />
                       </Button>
                     </PopoverTrigger>
@@ -276,10 +348,18 @@ export const KeyPairTable = ({
                           {t('settings.deleteConfirm.keyPair.description')}
                         </p>
                         <div className="flex justify-end gap-2 sm:gap-3">
-                          <Button variant="outline" size="sm" onClick={handleCancelDelete}>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleCancelDelete}
+                          >
                             {t('buttons.cancel')}
                           </Button>
-                          <Button variant="destructive" size="sm" onClick={handleConfirmDelete}>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={handleConfirmDelete}
+                          >
                             {t('buttons.delete')}
                           </Button>
                         </div>

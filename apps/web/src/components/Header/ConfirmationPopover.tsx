@@ -1,10 +1,8 @@
-/* eslint-disable no-unused-vars */
-
 import {
   Button,
   Popover,
   PopoverContent,
-  PopoverTrigger
+  PopoverTrigger,
 } from '@nsiod/share-ui'
 import { Info, Trash2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -28,7 +26,7 @@ export const ConfirmationPopover = ({
   onConfirm,
   onCancel,
   triggerIcon = <Trash2 className="size-4 sm:size-5" />,
-  type = 'delete'
+  type = 'delete',
 }: ConfirmationPopoverProps) => {
   const t = useTranslations()
 
@@ -84,7 +82,9 @@ export const ConfirmationPopover = ({
       <PopoverContent className="w-[90vw] sm:w-80">
         <div className="space-y-3 sm:space-y-4">
           <div className="flex items-center gap-2">
-            <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full ${getBackgroundColor()} flex items-center justify-center`}>
+            <div
+              className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full ${getBackgroundColor()} flex items-center justify-center`}
+            >
               <Info className={`size-3 sm:size-4 ${getIconColor()}`} />
             </div>
             <h4 className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100">

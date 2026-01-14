@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 import { secureStorage } from '@/lib/encryption'
@@ -27,29 +26,33 @@ export const useSecureLocalStorage = <T,>(key: string, initialValue: T) => {
       }
     }
 
-    loadData()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [key])
+    void loadData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key, initialValue])
 
-  const setStoredValue = useCallback((newValue: T | ((prev: T) => T)) => {
-    try {
-      // Handle function updates
-      const resolvedValue = typeof newValue === 'function' 
-        ? (newValue as (prev: T) => T)(value) 
-        : newValue
+  const setStoredValue = useCallback(
+    (newValue: T | ((prev: T) => T)) => {
+      try {
+        // Handle function updates
+        const resolvedValue =
+          typeof newValue === 'function'
+            ? (newValue as (prev: T) => T)(value)
+            : newValue
 
-      // Update state immediately (synchronous)
-      setValue(resolvedValue)
-      
-      // Save to storage asynchronously (don't await)
-      secureStorage.setItem(key, resolvedValue).catch(() => {
-        toast.error('Failed to save data to storage')
-      })
-    } catch (error) {
-      console.error('Error setting value in storage:', error)
-      toast.error('Failed to update data')
-    }
-  }, [key, value])
+        // Update state immediately (synchronous)
+        setValue(resolvedValue)
+
+        // Save to storage asynchronously (don't await)
+        secureStorage.setItem(key, resolvedValue).catch(() => {
+          toast.error('Failed to save data to storage')
+        })
+      } catch (error) {
+        console.error('Error setting value in storage:', error)
+        toast.error('Failed to update data')
+      }
+    },
+    [key, value],
+  )
 
   const removeStoredValue = useCallback(() => {
     try {

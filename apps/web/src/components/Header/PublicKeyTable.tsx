@@ -1,28 +1,25 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-unused-vars */
 import {
   Button,
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+  Input,
+  Label,
   Popover,
   PopoverContent,
   PopoverTrigger,
-  Label,
-  Input,
   Table,
-  TableHeader,
-  TableRow,
-  TableHead,
   TableBody,
   TableCell,
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger
+  TableHead,
+  TableHeader,
+  TableRow,
 } from '@nsiod/share-ui'
-import { sliceAddress } from '@nsiod/share-utils'
-import { Copy, Pencil, Trash2, Info } from 'lucide-react'
+import { Copy, Info, Pencil, Trash2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 
-import { PublicKey } from '@/types'
+import type { PublicKey } from '@/types'
 
 interface PublicKeyTableProps {
   publicKeys: PublicKey[]
@@ -37,7 +34,7 @@ export const PublicKeyTable = ({
   onCopy,
   onEditNote,
   onDelete,
-  onSaveNote
+  onSaveNote,
 }: PublicKeyTableProps) => {
   const t = useTranslations()
 
@@ -90,18 +87,31 @@ export const PublicKeyTable = ({
       <Table className="table-fixed w-full">
         <TableHeader>
           <TableRow>
-            <TableHead className="p-2 sm:p-3 text-left" style={{ width: '45%' }}>
+            <TableHead
+              className="p-2 sm:p-3 text-left"
+              style={{ width: '45%' }}
+            >
               {t('input.publicKey')}
             </TableHead>
-            <TableHead className="p-2 sm:p-3 text-left" style={{ width: '20%' }}>
+            <TableHead
+              className="p-2 sm:p-3 text-left"
+              style={{ width: '20%' }}
+            >
               {t('input.note')}
             </TableHead>
-            <TableHead className="p-2 sm:p-3 text-left" style={{ width: '25%' }}></TableHead>
+            <TableHead
+              className="p-2 sm:p-3 text-left"
+              style={{ width: '25%' }}
+            ></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {publicKeys.map((key, index) => (
-            <TableRow key={index} className="border-b border-gray-200 dark:border-gray-600 text-gray-500 font-normal">
+            <TableRow
+              // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholders don't need stable keys
+              key={index}
+              className="border-b border-gray-200 dark:border-gray-600 text-gray-500 font-normal"
+            >
               <TableCell className="p-2 sm:p-3" style={{ width: '45%' }}>
                 <HoverCard>
                   <HoverCardTrigger asChild>
@@ -111,7 +121,7 @@ export const PublicKeyTable = ({
                       </span>
                     </div>
                   </HoverCardTrigger>
-                  <HoverCardContent className='w-full'>
+                  <HoverCardContent className="w-full">
                     <div className="flex items-center gap-2">
                       <span className="font-mono text-xs break-all flex-1">
                         {key.publicKey}
@@ -122,16 +132,29 @@ export const PublicKeyTable = ({
               </TableCell>
               <TableCell className="p-2 sm:p-3" style={{ width: '20%' }}>
                 <div className="flex items-center min-w-0">
-                  <span className="truncate" title={key.note}>{key.note || '---'}</span>
-                  <Popover open={isNotePopoverOpen && editingIndex === index} onOpenChange={(open) => !open && handleCancelNote()}>
+                  <span className="truncate" title={key.note}>
+                    {key.note || '---'}
+                  </span>
+                  <Popover
+                    open={isNotePopoverOpen && editingIndex === index}
+                    onOpenChange={(open) => !open && handleCancelNote()}
+                  >
                     <PopoverTrigger asChild>
-                      <Button variant="ghost" size="icon" className="flex-shrink-0" onClick={() => handleEditNote(key, index)}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="flex-shrink-0"
+                        onClick={() => handleEditNote(key, index)}
+                      >
                         <Pencil className="size-4" />
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-[90vw] sm:w-80">
                       <div className="space-y-4">
-                        <Label htmlFor="editNote" className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                        <Label
+                          htmlFor="editNote"
+                          className="text-sm font-medium text-gray-900 dark:text-gray-100"
+                        >
                           {t('settings.editNote')}
                         </Label>
                         <Input
@@ -143,10 +166,18 @@ export const PublicKeyTable = ({
                           placeholder={t('input.optionalNote')}
                         />
                         <div className="flex justify-end gap-2">
-                          <Button variant="outline" size="sm" onClick={handleCancelNote}>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleCancelNote}
+                          >
                             {t('buttons.cancel')}
                           </Button>
-                          <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSaveNote}>
+                          <Button
+                            size="sm"
+                            className="bg-blue-600 hover:bg-blue-700 text-white"
+                            onClick={handleSaveNote}
+                          >
                             {t('buttons.save')}
                           </Button>
                         </div>
@@ -156,12 +187,24 @@ export const PublicKeyTable = ({
                 </div>
               </TableCell>
               <TableCell className="p-2 sm:p-3" style={{ width: '25%' }}>
-                <Button variant="ghost" size="icon" className="flex-shrink-0" onClick={() => onCopy(key.publicKey)}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="flex-shrink-0"
+                  onClick={() => onCopy(key.publicKey)}
+                >
                   <Copy className="size-4" />
                 </Button>
-                <Popover open={isDeletePopoverOpen && editingIndex === index} onOpenChange={(open) => !open && handleCancelDelete()}>
+                <Popover
+                  open={isDeletePopoverOpen && editingIndex === index}
+                  onOpenChange={(open) => !open && handleCancelDelete()}
+                >
                   <PopoverTrigger asChild>
-                    <Button variant="ghost" size="icon" onClick={() => handleDeleteClick(index)}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDeleteClick(index)}
+                    >
                       <Trash2 className="size-4 sm:size-5" />
                     </Button>
                   </PopoverTrigger>
@@ -179,10 +222,18 @@ export const PublicKeyTable = ({
                         {t('settings.deleteConfirm.publicKey.description')}
                       </p>
                       <div className="flex justify-end gap-2 sm:gap-3">
-                        <Button variant="outline" size="sm" onClick={handleCancelDelete}>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleCancelDelete}
+                        >
                           {t('buttons.cancel')}
                         </Button>
-                        <Button variant="destructive" size="sm" onClick={handleConfirmDelete}>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={handleConfirmDelete}
+                        >
                           {t('buttons.delete')}
                         </Button>
                       </div>

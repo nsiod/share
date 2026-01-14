@@ -31,8 +31,7 @@ export default function HomePage() {
 
   return (
     <html lang="en">
-      <body>
-      </body>
+      <body></body>
     </html>
   )
 }

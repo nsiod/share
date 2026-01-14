@@ -1,11 +1,15 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { notFound } from 'next/navigation'
-import { Locale, hasLocale, NextIntlClientProvider } from 'next-intl'
-import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server'
+import type { Locale } from 'next-intl'
+import { hasLocale, NextIntlClientProvider } from 'next-intl'
+import {
+  getMessages,
+  getTranslations,
+  setRequestLocale,
+} from 'next-intl/server'
 import { Toaster } from 'sonner'
 
-// import './globals.css'
 import '@nsiod/share-ui/css'
 import Footer from '@/components/Footer'
 import Header from '@/components/Header'
@@ -16,7 +20,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 interface RootLayoutProps {
   children: React.ReactNode
-  params: Promise<{ locale: Locale }>;
+  params: Promise<{ locale: Locale }>
 }
 
 export function generateStaticParams() {
@@ -24,7 +28,7 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({
-  params
+  params,
 }: {
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
@@ -56,25 +60,25 @@ export async function generateMetadata({
       //   }
       // ],
       locale: locale,
-      type: 'website'
+      type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
       title: t('title'),
       description: t('description'),
-      creator: '@nsiod'
+      creator: '@nsiod',
       // images: ['https://ns.io/twitter-image.jpg']
     },
     icons: '/logo.svg',
     alternates: {
-      canonical: 'https://ns.io/'
-    }
+      canonical: 'https://ns.io/',
+    },
   }
 }
 
 export default async function RootLayout({
   children,
-  params
+  params,
 }: RootLayoutProps) {
   const { locale } = await params
 
@@ -99,17 +103,11 @@ export default async function RootLayout({
               <div className="flex flex-col items-center flex-1">
                 <Header />
 
-                <div className="w-full">
-                  {children}
-                </div>
+                <div className="w-full">{children}</div>
               </div>
             </main>
             <Footer />
-            <Toaster
-              richColors
-              position="top-right"
-              duration={3000}
-            />
+            <Toaster richColors position="top-right" duration={3000} />
           </Providers>
         </NextIntlClientProvider>
       </body>

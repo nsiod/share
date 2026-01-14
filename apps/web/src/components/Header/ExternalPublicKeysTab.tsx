@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-
 import { Button } from '@nsiod/share-ui'
 import { ChevronLeft } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -11,7 +9,7 @@ import { PublicKeyForm } from '@/components/Header/PublicKeyForm'
 import { PublicKeyTable } from '@/components/Header/PublicKeyTable'
 import { usePublicKeyManagement } from '@/hooks'
 import { validatePublicKey } from '@/lib/key'
-import { PublicKey } from '@/types'
+import type { PublicKey } from '@/types'
 
 interface ExternalPublicKeysTabProps {
   publicKeys: PublicKey[]
@@ -20,7 +18,7 @@ interface ExternalPublicKeysTabProps {
 
 export const ExternalPublicKeysTab = ({
   publicKeys,
-  setPublicKeys
+  setPublicKeys,
 }: ExternalPublicKeysTabProps) => {
   const t = useTranslations()
 
@@ -29,11 +27,8 @@ export const ExternalPublicKeysTab = ({
   const [editingKey, setEditingKey] = useState<PublicKey | null>(null)
   const [validationError, setValidationError] = useState('')
 
-  const {
-    handleDeleteKey,
-    handleCopy,
-    handleSaveNoteInTable
-  } = usePublicKeyManagement({ publicKeys, setPublicKeys })
+  const { handleDeleteKey, handleCopy, handleSaveNoteInTable } =
+    usePublicKeyManagement({ publicKeys, setPublicKeys })
 
   const handleAddPublicKey = useCallback(() => {
     setEditingKey({ publicKey: '', note: '' })
@@ -57,7 +52,9 @@ export const ExternalPublicKeysTab = ({
     // Validate public key
     const validation = validatePublicKey(editingKey.publicKey.trim())
     if (!validation.isValid) {
-      setValidationError(validation.error || t('messages.error.invalidPublicKey'))
+      setValidationError(
+        validation.error || t('messages.error.invalidPublicKey'),
+      )
       toast.error(validation.error || t('messages.error.invalidPublicKey'))
       return
     }
@@ -67,14 +64,14 @@ export const ExternalPublicKeysTab = ({
       // Update existing key
       newPublicKeys[editingKey.index] = {
         publicKey: editingKey.publicKey.trim(),
-        note: editingKey.note?.trim() || ''
+        note: editingKey.note?.trim() || '',
       }
       toast.success(t('messages.success.publicKeyUpdated'))
     } else {
       // Add new key
       newPublicKeys.push({
         publicKey: editingKey.publicKey.trim(),
-        note: editingKey.note?.trim() || ''
+        note: editingKey.note?.trim() || '',
       })
       toast.success(t('messages.success.publicKeySaved'))
     }
@@ -92,12 +89,16 @@ export const ExternalPublicKeysTab = ({
   }, [])
 
   const handlePublicKeyChange = useCallback((value: string) => {
-    setEditingKey(prev => prev ? { ...prev, publicKey: value } : { publicKey: value, note: '' })
+    setEditingKey((prev) =>
+      prev ? { ...prev, publicKey: value } : { publicKey: value, note: '' },
+    )
     setValidationError('')
   }, [])
 
   const handleNoteChange = useCallback((value: string) => {
-    setEditingKey(prev => prev ? { ...prev, note: value } : { publicKey: '', note: value })
+    setEditingKey((prev) =>
+      prev ? { ...prev, note: value } : { publicKey: '', note: value },
+    )
   }, [])
 
   if (showAddForm) {
@@ -107,7 +108,9 @@ export const ExternalPublicKeysTab = ({
           <Button variant="secondary" size="icon" onClick={handleCancelForm}>
             <ChevronLeft className="size-4" />
           </Button>
-          <span className="text-base font-medium text-gray-600 dark:text-gray-400">Back</span>
+          <span className="text-base font-medium text-gray-600 dark:text-gray-400">
+            Back
+          </span>
         </div>
 
         <div className="border p-4 rounded-lg">
@@ -146,7 +149,10 @@ export const ExternalPublicKeysTab = ({
 
       {publicKeys.length > 0 && (
         <div className="flex justify-end gap-3 mt-6">
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={handleAddPublicKey}>
+          <Button
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+            onClick={handleAddPublicKey}
+          >
             {t('buttons.addReceiverKeys')}
           </Button>
         </div>

@@ -9,5 +9,6 @@ export const config = {
   // - … if they start with `/api`, `/trpc`, `/_next` or `/_vercel`
   // - … the ones containing a dot (e.g. `favicon.ico`)
   // - … opengraph-image, twitter-image, apple-icon, icon files
-  matcher: '/((?!api|trpc|_next|_vercel|opengraph-image|twitter-image|apple-icon|icon|.*\\..*).*)'
+  matcher:
+    '/((?!api|trpc|_next|_vercel|opengraph-image|twitter-image|apple-icon|icon|.*\\..*).*)',
 }
