@@ -4,8 +4,7 @@
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
-    "indentWidth": 2,
-    "formatWithErrors": true
+    "indentWidth": 2
   },
   "css": {
     "parser": {
@@ -70,7 +69,6 @@
       }
     },
     "domains": {
-      "next": "recommended",
       "react": "recommended"
     }
   },
@@ -86,6 +84,15 @@
       "formatter": {
         "indentStyle": "space",
         "indentWidth": 2
+      }
+    },
+    {
+      "includes": ["apps/web/**/*"],
+      "linter": {
+        "domains": {
+          "next": "recommended",
+          "react": "recommended"
+        }
       }
     }
   ],
