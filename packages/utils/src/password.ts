@@ -1,4 +1,4 @@
-import { subtle, randomUUID, getRandomValues } from "@nsiod/uncrypto"
+import { getRandomValues, subtle } from '@nsiod/uncrypto'
 
 export async function hashPasswordFn(
   password: string,
@@ -6,7 +6,9 @@ export async function hashPasswordFn(
 ): Promise<string> {
   const encoder = new TextEncoder()
   // Use provided salt if available, otherwise generate a new one
-  const salt = providedSalt ? new Uint8Array(providedSalt) : getRandomValues(new Uint8Array(16))
+  const salt = providedSalt
+    ? new Uint8Array(providedSalt)
+    : getRandomValues(new Uint8Array(16))
   const keyMaterial = await subtle.importKey(
     'raw',
     encoder.encode(password),
@@ -29,8 +31,10 @@ export async function hashPasswordFn(
   const exportedKey = (await subtle.exportKey('raw', key)) as ArrayBuffer
   const hashBuffer = new Uint8Array(exportedKey)
   const hashArray = Array.from(hashBuffer)
-  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
-  const saltHex = Array.from(salt).map(b => b.toString(16).padStart(2, '0')).join('')
+  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
+  const saltHex = Array.from(salt)
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('')
 
   return `${saltHex}:${hashHex}`
 }
@@ -46,7 +50,9 @@ export async function verifyPasswordFn(
     throw new Error('Invalid salt format')
   }
 
-  const salt = new Uint8Array(matchResult.map(byte => Number.parseInt(byte, 16)))
+  const salt = new Uint8Array(
+    matchResult.map((byte) => Number.parseInt(byte, 16)),
+  )
   const attemptHashWithSalt = await hashPasswordFn(passwordAttempt, salt)
   const [, attemptHash] = attemptHashWithSalt.split(':')
 
