@@ -1,0 +1,259 @@
+{
+  "header": {
+    "title": "ECIES 文件与消息加密工具",
+    "logoAlt": "Secure Vault 标志"
+  },
+  "footer": {
+    "copyright": "© 2025 Secure Vault. 保留所有权利。"
+  },
+  "tabs": {
+    "upload": "上传文件",
+    "pasteText": "粘贴文本"
+  },
+  "fileUpload": {
+    "dropHere": "将文件拖放到此处！",
+    "dragDrop": "拖放文件到这里",
+    "or": "或",
+    "selectFile": "选择文件"
+  },
+  "keyInput": {
+    "publicKey": "公钥",
+    "privateKeyOrMnemonic": "私钥或助记词",
+    "publicKeyPlaceholder": "输入 Base58 公钥（约 44-45 个字符）",
+    "privateKeyPlaceholder": "输入私钥或助记词"
+  },
+  "actions": {
+    "encrypt": "加密",
+    "decrypt": "解密",
+    "reset": "重置",
+    "copy": "复制",
+    "download": "下载"
+  },
+  "textInput": {
+    "placeholder": "粘贴或输入要加密或解密的文本"
+  },
+  "modeSwitcher": {
+    "label": "加密模式",
+    "selectMode": "选择模式",
+    "publicKeyMode": "公钥模式",
+    "passwordMode": "密码模式"
+  },
+  "theme": {
+    "toggle": "切换主题"
+  },
+  "language": {
+    "toggle": "语言"
+  },
+  "features": {
+    "title": "功能特性",
+    "fileAndText": "支持文件和文本的加密/解密。",
+    "ecies": "使用基于 secp256k1 曲线的 ECIES 非对称加密。",
+    "chunks": "分块处理大文件，提高效率。",
+    "autoDownload": "可选自动下载加密/解密结果。"
+  },
+  "howItWorks": {
+    "title": "使用指南",
+    "tabs": {
+      "gettingStarted": "快速入门",
+      "usageScenarios": "使用场景",
+      "features": "功能",
+      "faq": "常见问题",
+      "dataSecurity": "数据安全",
+      "privacy": "隐私保护"
+    },
+    "gettingStarted": {
+      "q1": "在哪里创建公钥/私钥对？",
+      "a1": "点击「设置」，进入「密钥」部分，创建密钥对以获取加密公钥和解密私钥。",
+      "q2": "如何加密文件？",
+      "a2": "选择或拖拽要加密的文件，系统会自动检测文件类型。输入或选择公钥，然后点击「加密」开始。",
+      "q3": "如何解密收到的加密文件？",
+      "a3": "上传加密文件，系统会自动识别。输入正确的私钥，点击「解密」即可查看内容。",
+      "q4": "可以加密文本吗？",
+      "a4": "可以。在首页切换到「粘贴文本」模式，粘贴内容，输入密钥，点击「加密」即可。"
+    },
+    "usageScenarios": {
+      "q1": "向他人发送加密文件",
+      "a1": "使用收件人的公钥加密文件，然后通过云存储或电子邮件等方式发送加密文件。只有收件人才能使用其私钥解密。",
+      "q2": "加密自己的文件",
+      "a2": "首先在「密钥」部分创建密钥对（公钥和私钥）。使用公钥加密文件，之后使用私钥解密。",
+      "q3": "快速加密",
+      "a3": "您可以直接分享公钥链接。其他人可以打开链接立即加密文件，无需手动输入密钥。",
+      "q4": "我想加密和归档公司文件，可以吗？",
+      "a4": "当然可以。建议您创建密钥对并妥善保管私钥，然后用它来加密和存储或归档公司内部文件。"
+    },
+    "featuresContent": {
+      "q1": "支持哪些加密方式？",
+      "a1": "支持非对称加密（使用公钥/私钥对）。",
+      "q2": "支持哪些文件类型？",
+      "a2": "支持常见的文档、图片、压缩包、音频和视频格式。单个文件最大 100MB，文本限制 10,000 字符。",
+      "q3": "公钥链接加密",
+      "a3": "您可以分享公钥链接，让他人安全地加密文档并发送给您。"
+    },
+    "faq": {
+      "q1": "我需要创建自己的密钥吗？",
+      "a1": "是的。如果您想加密文件或接收他人发送的加密文件，建议创建自己的密钥对。",
+      "q2": "如何分享我的公钥？",
+      "a2": "创建密钥对后，您可以复制公钥或生成的公钥链接分享给他人使用。",
+      "q3": "如果我忘记了私钥或密码怎么办？",
+      "a3": "我们无法找回您的私钥或密码。请妥善备份，不要分享。没有它们将无法解密数据。",
+      "q4": "每次都需要输入安全密码吗？",
+      "a4": "是的。为确保安全，每次访问密钥部分时都需要输入密码。",
+      "q5": "如果忘记安全密码怎么办？",
+      "a5": "您可以重置账户以设置新的安全密码。重置前请务必备份数据，之后可以导入恢复密钥数据。",
+      "q6": "可以同时加密多个文件吗？",
+      "a6": "不可以。每次只能加密一个文件。"
+    },
+    "dataSecurity": {
+      "q1": "我的文件会上传到服务器吗？",
+      "a1": "不会。所有加密/解密操作都在浏览器本地执行，不会上传或存储任何数据。",
+      "q2": "你们能访问我的私钥吗？",
+      "a2": "不能。私钥存储在本地，受安全密码保护。我们无法访问或读取。"
+    },
+    "privacy": {
+      "q1": "你们会追踪我的使用情况吗？",
+      "a1": "不会。本工具不追踪、存储或上传任何用户数据，完全在本地运行，提供完整的隐私保护。",
+      "q2": "如何彻底删除我的密钥？",
+      "a2": "您可以在密钥管理部分删除密钥对。删除后无法恢复。您也可以重置账户以清除所有密钥数据。"
+    }
+  },
+  "toast": {
+    "detectedPubkeyText": "检测到公钥加密文本，已切换到解密模式",
+    "signedNotSupported": "暂不支持签名内容",
+    "pwdNotSupported": "此模式不支持密码加密内容",
+    "detectedPlaintext": "检测到未加密文本，已切换到加密模式",
+    "detectedPubkeyFile": "检测到公钥加密文件，已切换到密钥加密模式",
+    "signedFileNotSupported": "暂不支持签名文件",
+    "copied": "文本已复制到剪贴板！",
+    "copyFailed": "复制文本失败",
+    "downloadSuccess": "{{type}}下载成功",
+    "encryptedFile": "加密文件",
+    "decryptedFile": "解密文件",
+    "encryptedText": "加密文本",
+    "decryptedText": "解密文本",
+    "selectFile": "请选择文件",
+    "enterText": "请输入要处理的文本",
+    "enterPublicKey": "请输入公钥",
+    "enterPrivateKey": "请输入私钥或助记词",
+    "signatureValid": "签名验证：有效",
+    "signatureInvalid": "签名验证：无效",
+    "fileEncrypted": "文件加密成功！请点击下载按钮保存。",
+    "fileDecrypted": "文件解密成功！请点击下载按钮保存。",
+    "textEncrypted": "文本加密成功！",
+    "textDecrypted": "文本解密成功！",
+    "processingError": "处理过程中发生错误",
+    "oneFileOnly": "每次只能选择一个文件",
+    "dropFailed": "处理拖放文件失败"
+  },
+  "settings": {
+    "title": "设置",
+    "cancel": "取消",
+    "confirm": "确认",
+    "save": "保存",
+    "delete": "删除",
+    "note": "备注",
+    "editNote": "编辑备注",
+    "tabs": {
+      "general": "通用",
+      "keys": "密钥",
+      "externalKeys": "外部公钥",
+      "password": "安全密码"
+    },
+    "general": {
+      "theme": "主题",
+      "system": "跟随系统",
+      "light": "浅色",
+      "dark": "深色",
+      "language": "语言",
+      "english": "English",
+      "chinese": "中文",
+      "backupData": "备份数据",
+      "backupDesc": "备份您的密钥和外部公钥。",
+      "export": "导出",
+      "importData": "导入数据",
+      "importDesc": "导入备份数据以恢复密钥和外部公钥。",
+      "import": "导入",
+      "selectBackupFile": "选择备份文件",
+      "changeFile": "更换文件",
+      "resetAccount": "重置账户",
+      "resetDesc": "重置账户将删除所有本地存储的数据。此操作不可撤销。",
+      "reset": "重置",
+      "resetWarning": "重置账户将删除所有本地存储的数据。请确保您已备份密钥文件（.enc）。此操作不可撤销。",
+      "resetSuccess": "账户重置成功，所有数据已清除。",
+      "backupSuccess": "备份创建成功"
+    },
+    "keys": {
+      "publicKey": "公钥",
+      "privateKey": "私钥",
+      "createKey": "创建密钥",
+      "noKeys": "暂无密钥",
+      "noKeysDesc": "创建密钥对以加密文件或文本",
+      "enterPublicKey": "输入公钥",
+      "enterPrivateKey": "输入私钥",
+      "notePlaceholder": "为此密钥对添加备注（可选）",
+      "saved": "密钥对保存成功",
+      "deleted": "密钥对删除成功",
+      "publicKeyCopied": "公钥已复制到剪贴板",
+      "privateKeyCopied": "私钥已复制到剪贴板",
+      "mnemonicCopied": "助记词已复制到剪贴板",
+      "keyEmpty": "密钥为空，无法复制",
+      "noteUpdated": "备注更新成功",
+      "deleteTitle": "删除密钥对",
+      "deleteConfirm": "确定要删除此密钥对吗？此操作不可撤销。",
+      "mnemonic": "助记词",
+      "generateNew": "生成新的",
+      "mnemonicPlaceholder": "输入或生成12个单词的助记词",
+      "enterMnemonic": "请输入或生成助记词",
+      "invalidMnemonic": "无效的助记词",
+      "deriveFailed": "从助记词派生密钥对失败",
+      "publicKeyAutoGenerated": "公钥将从助记词自动生成",
+      "note": "备注",
+      "actions": "操作"
+    },
+    "externalKeys": {
+      "publicKey": "公钥",
+      "add": "添加外部公钥",
+      "update": "更新公钥",
+      "noKeys": "暂无外部公钥",
+      "noKeysDesc": "添加外部公钥以加密文件或文本。",
+      "notePlaceholder": "为此公钥添加备注（可选）",
+      "saved": "公钥保存成功",
+      "deleted": "公钥删除成功",
+      "copied": "公钥已复制到剪贴板",
+      "empty": "公钥为空，无法复制",
+      "noteUpdated": "备注更新成功",
+      "deleteTitle": "删除公钥",
+      "deleteConfirm": "确定要删除此公钥吗？此操作不可撤销。",
+      "note": "备注",
+      "actions": "操作"
+    },
+    "password": {
+      "password": "密码",
+      "currentPassword": "当前密码",
+      "newPassword": "新密码",
+      "setPassword": "设置密码",
+      "confirmNew": "确认新密码",
+      "confirmPassword": "确认密码",
+      "change": "修改",
+      "forgot": "忘记密码",
+      "forgotDesc": "忘记密码了？请",
+      "resetAccount": "重置账户",
+      "forgotDescEnd": "以重新开始。请先备份您的数据。",
+      "yourPassword": "您的安全密码",
+      "notSetAlert": "您尚未设置安全密码。为保护您的账户，请立即设置。",
+      "incorrectPassword": "当前密码不正确",
+      "verifyFailed": "密码验证失败",
+      "enterValidCurrent": "请输入正确的当前密码",
+      "updated": "密码更新成功",
+      "setSuccess": "密码设置成功",
+      "saveFailed": "保存密码失败，请重试。",
+      "mismatch": "两次输入的密码不一致"
+    }
+  },
+  "error": {
+    "invalidPublicKey": "无效的公钥",
+    "invalidBase58": "输入无效。请输入有效的 Base58 公钥",
+    "invalidPrivateKeyLength": "私钥长度无效。必须为 32 字节（64 个十六进制字符）",
+    "invalidPrivateKey": "输入无效。请输入有效的私钥（64 个十六进制字符）或助记词",
+    "workerNotInit": "Web Worker 未初始化"
+  }
+}
