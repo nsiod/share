@@ -12,6 +12,7 @@ export default defineConfig({
   publicDir: resolve(rootDir, 'public'),
   build: {
     target: 'esnext',
+    assetsInlineLimit: 1024 * 1024,
   },
   optimizeDeps: {
     esbuildOptions: {

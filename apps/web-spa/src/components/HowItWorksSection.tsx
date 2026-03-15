@@ -3,6 +3,25 @@
 import { Button, cn } from '@nsiod/share-ui'
 import { useMemo, useState } from 'react'
 
+import {
+  answer,
+  encryptFiles,
+  encryptionMethod,
+  endToEndEncryption,
+  fileDecryption,
+  fileEncryption,
+  fileTypeSupport,
+  keyCreation,
+  keyDeletion,
+  localProcessing,
+  privacyTracking,
+  publicKeyLink,
+  question,
+  quickEncrypt,
+  sendFiles,
+  textEncryption,
+} from '@/assets/icons'
+
 // Type definitions
 type ContentKey =
   | 'Getting Started'
@@ -48,25 +67,25 @@ const GRID_LAYOUT_TABS = [
 const CONTENT: Content = {
   'Getting Started': [
     {
-      icon: '/KeyCreation.svg',
+      icon: keyCreation,
       title: 'Where can I create a public/private key pair?',
       description:
         'Click "Settings", go to the "Keys" section, and create a key pair to obtain your encryption public key and decryption private key.',
     },
     {
-      icon: '/FileEncryption.svg',
+      icon: fileEncryption,
       title: 'How to encrypt a file?',
       description:
         'Select or drag the file to be encrypted; the system will automatically detect the file type. Enter or choose a public key, then click "Encrypt" to start.',
     },
     {
-      icon: '/FileDecryption.svg',
+      icon: fileDecryption,
       title: 'How to decrypt a received encrypted file?',
       description:
         'Upload the encrypted file; the system will recognize it. Enter the correct private key and click "Decrypt" to view the content.',
     },
     {
-      icon: '/TextEncryption.svg',
+      icon: textEncryption,
       title: 'Can I encrypt text?',
       description:
         'Yes. On the homepage, switch to "Paste Text" mode, paste your content, enter the key, and click "Encrypt".',
@@ -74,25 +93,25 @@ const CONTENT: Content = {
   ],
   'Usage Scenarios': [
     {
-      icon: '/SendFiles.svg',
+      icon: sendFiles,
       title: 'Send Encrypted Files to Others',
       description:
         "Use the recipient's public key to encrypt the file. Then send the encrypted file through other means, such as cloud storage or email. Only the recipient can decrypt it using their private key.",
     },
     {
-      icon: '/EncryptFiles.svg',
+      icon: encryptFiles,
       title: 'Encrypt Your Own Files',
       description:
         'First, create a key pair (public key and private key) under the "Keys" section. Use your public key to encrypt files, and later use your private key to decrypt them.',
     },
     {
-      icon: '/QuickEncrypt.svg',
+      icon: quickEncrypt,
       title: 'Quick Encryption',
       description:
         'You can share your public key link directly. Others can open the link to encrypt files instantly, without needing to enter your key manually.',
     },
     {
-      icon: '/ArchiveFiles.svg',
+      icon: encryptFiles,
       title: "I'd like to encrypt and archive company files. Is that possible?",
       description:
         'Absolutely. We recommend that you create a key pair and keep the private key safe. You can then use it to encrypt and store or archive internal company files.',
@@ -100,19 +119,19 @@ const CONTENT: Content = {
   ],
   Features: [
     {
-      icon: '/EncryptionMethod.svg',
+      icon: encryptionMethod,
       title: 'What encryption methods are supported?',
       description:
         'Asymmetric encryption is supported (using public-private key pairs).',
     },
     {
-      icon: '/FileTypeSupport.svg',
+      icon: fileTypeSupport,
       title: 'What file types are supported?',
       description:
         'Common document, image, archive, audio, and video formats are supported. A single file can be up to 100MB, and text is limited to 10,000 characters.',
     },
     {
-      icon: '/PublicKeyLink.svg',
+      icon: publicKeyLink,
       title: 'Public key link encryption',
       description:
         'You can share a public key link to allow others to encrypt documents and send them to you securely.',
@@ -120,56 +139,56 @@ const CONTENT: Content = {
   ],
   FAQ: [
     {
-      icon: '/Question.svg',
-      sub_icon: '/Answer.svg',
+      icon: question,
+      sub_icon: answer,
       question: 'Do I need to create my own keys?',
       answer:
         'Yes. If you want to encrypt files or receive encrypted files from others, we recommend creating your own key pair.',
     },
     {
-      icon: '/Question.svg',
-      sub_icon: '/Answer.svg',
+      icon: question,
+      sub_icon: answer,
       question: 'How do I share my public key?',
       answer:
         'After creating a key pair, you can copy the public key or the generated public key link for others to use.',
     },
     {
-      icon: '/Question.svg',
-      sub_icon: '/Answer.svg',
+      icon: question,
+      sub_icon: answer,
       question: 'What if I forget my private key or password?',
       answer:
         'We cannot retrieve your private key or password. Please back them up safely and do not share them. Without them, you cannot decrypt data.',
     },
     {
-      icon: '/Question.svg',
-      sub_icon: '/Answer.svg',
+      icon: question,
+      sub_icon: answer,
       question: 'Do I need to enter the security password every time?',
       answer:
         'Yes. To ensure security, you must enter your password each time you access the Keys section.',
     },
     {
-      icon: '/Question.svg',
-      sub_icon: '/Answer.svg',
+      icon: question,
+      sub_icon: answer,
       question: 'What if I forget the security password?',
       answer:
         'You can reset your account to set a new security password. Be sure to back up your data before resetting, and you can later import it to restore your key data.',
     },
     {
-      icon: '/Question.svg',
-      sub_icon: '/Answer.svg',
+      icon: question,
+      sub_icon: answer,
       question: 'Can I encrypt multiple files at once?',
       answer: 'No. Only one file can be encrypted at a time.',
     },
   ],
   'Data Security': [
     {
-      icon: '/LocalProcessing.svg',
+      icon: localProcessing,
       title: 'Are my files uploaded to the server?',
       description:
         'No. All encryption/decryption operations are performed locally in your browser. No data is uploaded or stored.',
     },
     {
-      icon: '/EndToEndEncryption.svg',
+      icon: endToEndEncryption,
       title: 'Can you access my private key?',
       description:
         'No. The private key is stored locally and protected by your security password. We cannot access or read it.',
@@ -177,13 +196,13 @@ const CONTENT: Content = {
   ],
   Privacy: [
     {
-      icon: '/PrivacyTracking.svg',
+      icon: privacyTracking,
       title: 'Do you track my usage?',
       description:
         'No. This tool does not track, store, or upload any user data. It operates entirely locally for complete privacy protection.',
     },
     {
-      icon: '/KeyDeletion.svg',
+      icon: keyDeletion,
       title: 'How can I completely remove my keys?',
       description:
         'You can delete your key pair in the key management section. Once deleted, it cannot be recovered. You can also reset your account to remove all key data.',

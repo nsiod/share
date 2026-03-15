@@ -3,6 +3,7 @@ import { formatFileSize } from '@nsiod/share-utils'
 import { X } from 'lucide-react'
 import type React from 'react'
 
+import { filesIcon, folderFilled } from '@/assets/icons'
 import type { FileInfo } from '@/types'
 
 interface FileUploadAreaProps {
@@ -32,7 +33,7 @@ export const FileUploadArea: React.FC<FileUploadAreaProps> = ({
         <div className="flex flex-col sm:flex-row items-center justify-between p-4 rounded-md bg-gray-100 dark:bg-gray-700">
           <div className="flex items-center flex-1 space-x-3 w-full">
             <img
-              src="/FolderFilled.svg"
+              src={folderFilled}
               alt="Selected File"
               width={36}
               height={36}
@@ -75,7 +76,7 @@ export const FileUploadArea: React.FC<FileUploadAreaProps> = ({
       onDrop={onDrop}
     >
       <img
-        src="/Files.svg"
+        src={filesIcon}
         alt="Upload File"
         width={36}
         height={36}

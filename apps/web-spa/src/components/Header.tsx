@@ -1,5 +1,6 @@
 import { Lock } from 'lucide-react'
 
+import { logo, logoDark } from '@/assets/icons'
 import { ThemeToggle } from '@/components/ThemeToggle'
 
 export default function Header() {
@@ -10,14 +11,14 @@ export default function Header() {
       <div className="relative max-w-6xl mx-auto flex flex-col md:flex-row items-center md:justify-between gap-4 p-4">
         <div className="flex-1 text-center space-y-2">
           <img
-            src="/logo.svg"
+            src={logo}
             alt="Secure Vault Logo"
             width={80}
             height={40}
             className="size-10 sm:size-12 text-blue-500 mx-auto mb-2 block dark:hidden"
           />
           <img
-            src="/logo_dark.svg"
+            src={logoDark}
             alt="Secure Vault Logo"
             width={80}
             height={40}

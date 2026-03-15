@@ -1,6 +1,7 @@
 import { isBase58String, validateBase58PublicKey } from '@nsiod/share-utils'
 import { useCallback, useEffect } from 'react'
 
+import { maskGroup, maskGroupDark } from '@/assets/icons'
 import {
   ActionButtons,
   CryptoTabs,
@@ -88,12 +89,12 @@ export default function HomePage() {
     <>
       <div className="relative py-8 sm:py-12 md:py-16 z-[1] bg-[#f5f3f0] dark:bg-[#0E0F11]">
         <img
-          src="/MaskGroup.svg"
+          src={maskGroup}
           alt="Hero Background"
           className="absolute w-full h-full object-contain sm:object-cover -z-10 dark:hidden"
         />
         <img
-          src="/MaskGroup_Dark.svg"
+          src={maskGroupDark}
           alt="Hero Background"
           className="absolute w-full h-full object-contain sm:object-cover -z-10 hidden dark:block"
         />
