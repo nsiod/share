@@ -51,7 +51,7 @@ export const CryptoTabs: React.FC<CryptoTabsProps> = ({
       className="flex flex-col items-center w-full"
       onValueChange={(value) => onInputTypeChange(value as 'file' | 'message')}
     >
-      <TabsList>
+      <TabsList className="h-10!">
         <TabsTrigger value="file" className="sm:px-8">
           {t('tabs.upload')}
         </TabsTrigger>
