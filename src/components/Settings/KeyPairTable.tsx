@@ -14,6 +14,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
 } from '@/components/ui'
 import { sliceAddress } from '@/lib/help'
 
@@ -128,9 +131,20 @@ export const KeyPairTable = ({
           <TableRow key={keyPair.publicKey}>
             {/* Public Key */}
             <TableCell>
-              <span className="text-xs font-mono text-gray-700 dark:text-gray-300">
-                {sliceAddress(keyPair.publicKey, 10, 6)}
-              </span>
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <span className="text-xs font-mono text-gray-700 dark:text-gray-300 cursor-default" />
+                  }
+                >
+                  {sliceAddress(keyPair.publicKey, 10, 6)}
+                </TooltipTrigger>
+                <TooltipContent className="max-w-[90vw]">
+                  <span className="font-mono break-all select-all">
+                    {keyPair.publicKey}
+                  </span>
+                </TooltipContent>
+              </Tooltip>
             </TableCell>
 
             {/* Note */}
