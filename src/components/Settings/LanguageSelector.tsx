@@ -15,14 +15,14 @@ export function LanguageSelector() {
   }
 
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 py-3 sm:py-4 gap-2 sm:gap-0">
+    <div className="flex flex-row items-center justify-between px-4 py-3 sm:py-4">
       <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">
         {t('settings.general.language')}
       </h3>
       <RadioGroup
         value={i18n.language}
         onValueChange={handleChange}
-        className="flex flex-col sm:flex-row gap-3 sm:gap-4"
+        className="flex flex-row gap-4"
       >
         {LANGUAGES.map((lang) => (
           <div key={lang.value} className="flex items-center space-x-2">

@@ -23,14 +23,14 @@ export function ThemeSelector() {
   }
 
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 py-3 sm:py-4 gap-2 sm:gap-0">
+    <div className="flex flex-row items-center justify-between px-4 py-3 sm:py-4">
       <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">
         {t('settings.general.theme')}
       </h3>
       <RadioGroup
         defaultValue={getTheme()}
         onValueChange={setTheme}
-        className="flex flex-col sm:flex-row gap-3 sm:gap-4"
+        className="flex flex-row gap-4"
       >
         {['system', 'light', 'dark'].map((themeOption) => (
           <div key={themeOption} className="flex items-center space-x-2">

@@ -19,12 +19,7 @@ import { cn } from '@/lib/utils'
 
 import type { TabType } from '@/types'
 
-const TABS: TabType[] = [
-  'General',
-  'Keys',
-  'External Public Keys',
-  'Security Password',
-]
+const TABS: TabType[] = ['General', 'Keys', 'External Public Keys']
 
 export function SettingsDialog() {
   const { t } = useTranslation()
