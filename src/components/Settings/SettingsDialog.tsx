@@ -1,12 +1,9 @@
-import { ChevronLeft, Settings, X } from 'lucide-react'
+import { Settings, X } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { toast } from 'sonner'
 import { ExternalPublicKeysTab } from '@/components/Settings/ExternalPublicKeysTab'
 import { GeneralTab } from '@/components/Settings/GeneralTab'
-import { ImportDialog } from '@/components/Settings/ImportDialog'
 import { KeysTab } from '@/components/Settings/KeysTab'
-import { PublicKeyForm } from '@/components/Settings/PublicKeyForm'
 import { SecurityPasswordTab } from '@/components/Settings/SecurityPasswordTab'
 import {
   Button,
@@ -18,11 +15,10 @@ import {
   TabsList,
   TabsTrigger,
 } from '@/components/ui'
-import { validatePublicKey } from '@/lib/key'
 import { cn } from '@/lib/utils'
 import { useKeyStore } from '@/stores/useKeyStore'
 
-import type { KeyPair, PublicKey, TabType } from '@/types'
+import type { TabType } from '@/types'
 
 const TABS: TabType[] = [
   'General',
@@ -37,105 +33,23 @@ export function SettingsDialog() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [activeTab, setActiveTab] = useState<TabType>('General')
 
-  const [showImportDialog, setShowImportDialog] = useState(false)
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
-
-  const {
-    publicKeys,
-    setPublicKeys,
-    keyPairs,
-    setKeyPairs,
-    passwordHash: storedPasswordHash,
-    setPasswordHash: setStoredPasswordHash,
-    init,
-  } = useKeyStore()
-
-  const [showAddKey, setShowAddKey] = useState(false)
-  const [editKey, setEditKey] = useState<PublicKey | null>(null)
-  const [validationError, setValidationError] = useState('')
-
-  const [showCreateKeyPair, setShowCreateKeyPair] = useState(false)
-  const [editKeyPair, setEditKeyPair] = useState<KeyPair | null>(null)
-
-  const [showChangePassword, setShowChangePassword] = useState(false)
+  const init = useKeyStore((s) => s.init)
 
   useEffect(() => {
     init()
   }, [init])
 
-  const resetAllStates = useCallback(() => {
-    setShowImportDialog(false)
-    setSelectedFile(null)
-    setShowAddKey(false)
-    setEditKey(null)
-    setShowChangePassword(false)
-    setShowCreateKeyPair(false)
-    setEditKeyPair(null)
-    setValidationError('')
-  }, [])
-
   const handleTabClick = useCallback(
     (tab: TabType) => {
       setActiveTab(tab)
-      resetAllStates()
-      if (tab === 'Security Password' && !storedPasswordHash) {
-        setShowChangePassword(true)
-      }
-    },
-    [storedPasswordHash, resetAllStates],
-  )
-
-  const handleCloseDialog = useCallback(() => {
-    setIsDialogOpen(false)
-    resetAllStates()
-  }, [resetAllStates])
-
-  const handleFileSelect = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0]
-      setSelectedFile(file || null)
     },
     [],
   )
 
-  const handleImport = useCallback(() => {
-    setShowImportDialog(false)
-    setSelectedFile(null)
+  const handleCloseDialog = useCallback(() => {
+    setIsDialogOpen(false)
+    setActiveTab('General')
   }, [])
-
-  const handleSavePublicKey = useCallback(() => {
-    if (!editKey) {
-      setValidationError('No public key data provided')
-      toast.error('No public key data provided')
-      return
-    }
-
-    const validation = validatePublicKey(editKey.publicKey)
-    if (!validation.isValid) {
-      setValidationError(validation.error || 'Invalid public key')
-      toast.error(validation.error || 'Invalid public key')
-      return
-    }
-
-    const newPublicKeys = [...publicKeys]
-    if (editKey.index !== undefined) {
-      newPublicKeys[editKey.index] = {
-        publicKey: editKey.publicKey,
-        note: editKey.note || '',
-      }
-    } else {
-      newPublicKeys.push({
-        publicKey: editKey.publicKey,
-        note: editKey.note || '',
-      })
-    }
-
-    setPublicKeys(newPublicKeys)
-    toast.success(t('settings.externalKeys.saved'))
-    setShowAddKey(false)
-    setEditKey(null)
-    setValidationError('')
-  }, [editKey, publicKeys, setPublicKeys, t])
 
   const tabLabelMap: Record<TabType, string> = {
     General: t('settings.tabs.general'),
@@ -145,90 +59,16 @@ export function SettingsDialog() {
   }
 
   const renderTabContent = () => {
-    if (showImportDialog) {
-      return (
-        <ImportDialog
-          selectedFile={selectedFile}
-          onFileSelect={handleFileSelect}
-          onImport={handleImport}
-          onCancel={() => setShowImportDialog(false)}
-        />
-      )
-    }
-
-    if (showAddKey) {
-      return (
-        <div className="p-3 sm:p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setShowAddKey(false)}
-            >
-              <ChevronLeft className="size-4" />
-            </Button>
-            <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">
-              {t('settings.tabs.externalKeys')}
-            </h2>
-          </div>
-          <div className="flex justify-center text-center pt-2 pb-6">
-            <PublicKeyForm
-              editKey={editKey}
-              validationError={validationError}
-              onPublicKeyChange={(value) =>
-                setEditKey((prev) => ({
-                  ...(prev || { publicKey: '', note: '' }),
-                  publicKey: value,
-                }))
-              }
-              onNoteChange={(value) =>
-                setEditKey((prev) => ({
-                  ...(prev || { publicKey: '', note: '' }),
-                  note: value,
-                }))
-              }
-              onSave={handleSavePublicKey}
-              onCancel={() => {
-                setShowAddKey(false)
-                setEditKey(null)
-                setValidationError('')
-              }}
-            />
-          </div>
-        </div>
-      )
-    }
-
     switch (activeTab) {
       case 'General':
         return <GeneralTab />
       case 'Keys':
-        return (
-          <KeysTab
-            keyPairs={keyPairs}
-            setKeyPairs={setKeyPairs}
-            showCreateKeyPair={showCreateKeyPair}
-            setShowCreateKeyPair={setShowCreateKeyPair}
-            editKeyPair={editKeyPair}
-            setEditKeyPair={setEditKeyPair}
-          />
-        )
+        return <KeysTab />
       case 'External Public Keys':
-        return (
-          <ExternalPublicKeysTab
-            publicKeys={publicKeys}
-            setPublicKeys={setPublicKeys}
-            setShowAddKey={setShowAddKey}
-            setEditKey={setEditKey}
-          />
-        )
+        return <ExternalPublicKeysTab />
       case 'Security Password':
         return (
           <SecurityPasswordTab
-            storedPasswordHash={storedPasswordHash}
-            setStoredPasswordHash={setStoredPasswordHash}
-            showChangePassword={showChangePassword}
-            setShowChangePassword={setShowChangePassword}
             setActiveTab={setActiveTab}
           />
         )

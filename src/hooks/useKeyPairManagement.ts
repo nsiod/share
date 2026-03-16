@@ -1,23 +1,22 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
+import { useKeyStore } from '@/stores/useKeyStore'
 
 import type { KeyPair } from '@/types'
 
 interface UseKeyPairManagementProps {
-  keyPairs: KeyPair[]
-  setKeyPairs: (keys: KeyPair[]) => void
   setEditKeyPair: (keyPair: KeyPair | null | ((prev: KeyPair | null) => KeyPair | null)) => void
   setShowCreateKeyPair: (show: boolean) => void
 }
 
 export const useKeyPairManagement = ({
-  keyPairs,
-  setKeyPairs,
   setEditKeyPair,
   setShowCreateKeyPair,
 }: UseKeyPairManagementProps) => {
   const { t } = useTranslation()
+  const keyPairs = useKeyStore((s) => s.keyPairs)
+  const setKeyPairs = useKeyStore((s) => s.setKeyPairs)
 
   const handleCreateKeyPair = useCallback(() => {
     setEditKeyPair({ publicKey: '', mnemonic: '', note: '' })

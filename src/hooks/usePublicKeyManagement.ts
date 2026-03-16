@@ -1,20 +1,15 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
+import { useKeyStore } from '@/stores/useKeyStore'
 
 import { validatePublicKey } from '@/lib/key'
 import type { PublicKey } from '@/types'
 
-interface UsePublicKeyManagementProps {
-  publicKeys: PublicKey[]
-  setPublicKeys: (keys: PublicKey[]) => void
-}
-
-export const usePublicKeyManagement = ({
-  publicKeys,
-  setPublicKeys,
-}: UsePublicKeyManagementProps) => {
+export const usePublicKeyManagement = () => {
   const { t } = useTranslation()
+  const publicKeys = useKeyStore((s) => s.publicKeys)
+  const setPublicKeys = useKeyStore((s) => s.setPublicKeys)
 
   const handleSavePublicKey = useCallback(
     (editKey: PublicKey) => {

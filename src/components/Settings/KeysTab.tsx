@@ -1,35 +1,23 @@
 import { ChevronLeft } from 'lucide-react'
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui'
 import { CreateKeyPairForm } from '@/components/Settings/CreateKeyPairForm'
 import { EmptyState } from '@/components/Settings/EmptyState'
 import { KeyPairTable } from '@/components/Settings/KeyPairTable'
 import { useKeyPairManagement } from '@/hooks/useKeyPairManagement'
+import { useKeyStore } from '@/stores/useKeyStore'
 import { deriveKeyPair } from '@/lib/help'
 
 import type { KeyPair } from '@/types'
 
-interface KeysTabProps {
-  keyPairs: KeyPair[]
-  setKeyPairs: (keys: KeyPair[]) => void
-  showCreateKeyPair: boolean
-  setShowCreateKeyPair: (show: boolean) => void
-  editKeyPair: KeyPair | null
-  setEditKeyPair: (
-    keyPair: KeyPair | null | ((prev: KeyPair | null) => KeyPair | null),
-  ) => void
-}
-
-export const KeysTab = ({
-  keyPairs,
-  setKeyPairs,
-  showCreateKeyPair,
-  setShowCreateKeyPair,
-  editKeyPair,
-  setEditKeyPair,
-}: KeysTabProps) => {
+export const KeysTab = () => {
   const { t } = useTranslation()
+  const keyPairs = useKeyStore((s) => s.keyPairs)
+
+  const [showCreateKeyPair, setShowCreateKeyPair] = useState(false)
+  const [editKeyPair, setEditKeyPair] = useState<KeyPair | null>(null)
+
   const {
     handleCreateKeyPair,
     handleSaveKeyPair,
@@ -37,8 +25,6 @@ export const KeysTab = ({
     handleCopyKey,
     handleSaveNoteInTable,
   } = useKeyPairManagement({
-    keyPairs,
-    setKeyPairs,
     setEditKeyPair,
     setShowCreateKeyPair,
   })
@@ -51,7 +37,7 @@ export const KeysTab = ({
           : { publicKey: '', mnemonic: '', note: value },
       )
     },
-    [setEditKeyPair],
+    [],
   )
 
   const handleMnemonicChange = useCallback(
@@ -69,7 +55,7 @@ export const KeysTab = ({
           : { publicKey, mnemonic: value, note: '' }
       })
     },
-    [setEditKeyPair],
+    [],
   )
 
   const handleSave = useCallback(() => {

@@ -12,25 +12,22 @@ import {
 } from '@/components/ui'
 import { validatePasswords } from '@/lib/key'
 import { hashPasswordFn, verifyPasswordFn } from '@/lib/password'
+import { useKeyStore } from '@/stores/useKeyStore'
 
 import type { TabType } from '@/types'
 
 interface SecurityPasswordTabProps {
-  storedPasswordHash: string | null
-  setStoredPasswordHash: (hash: string | null) => void
-  showChangePassword: boolean
-  setShowChangePassword: (value: boolean) => void
   setActiveTab: (tab: TabType) => void
 }
 
 export const SecurityPasswordTab = ({
-  storedPasswordHash,
-  setStoredPasswordHash,
-  showChangePassword,
-  setShowChangePassword,
   setActiveTab,
 }: SecurityPasswordTabProps) => {
   const { t } = useTranslation()
+  const storedPasswordHash = useKeyStore((s) => s.passwordHash)
+  const setStoredPasswordHash = useKeyStore((s) => s.setPasswordHash)
+
+  const [showChangePassword, setShowChangePassword] = useState(false)
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -38,6 +35,12 @@ export const SecurityPasswordTab = ({
   const [validationError, setValidationError] = useState('')
 
   const isPasswordSet = Boolean(storedPasswordHash)
+
+  useEffect(() => {
+    if (!storedPasswordHash) {
+      setShowChangePassword(true)
+    }
+  }, [storedPasswordHash])
 
   useEffect(() => {
     if (!storedPasswordHash || currentPassword.length !== 6) {
@@ -102,8 +105,8 @@ export const SecurityPasswordTab = ({
     confirmPassword,
     isPasswordSet,
     currentPasswordError,
+    currentPassword,
     setStoredPasswordHash,
-    setShowChangePassword,
     t,
   ])
 
