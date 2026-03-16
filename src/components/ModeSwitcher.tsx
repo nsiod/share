@@ -22,7 +22,8 @@ export default function ModeSwitcher({
   const navigate = useNavigate()
   const { pathname } = useLocation()
 
-  const handleModeChange = (value: string) => {
+  const handleModeChange = (value: string | null) => {
+    if (!value) return
     if (value === 'puk' && pathname !== '/') {
       void navigate('/')
     } else if (value === 'pwd' && pathname !== '/password') {

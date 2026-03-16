@@ -5,6 +5,7 @@ import {
   KeyInputSection,
   ProcessButton,
 } from '@/components/Home'
+import { HeroBackground } from '@/components/Home/HeroBackground'
 import HowItWorksSection from '@/components/HowItWorksSection'
 import { useCryptoLogic, useCryptoState, useDragAndDrop } from '@/hooks'
 import { isBase58String, validateBase58PublicKey } from '@/lib'
@@ -85,17 +86,8 @@ export default function HomePage() {
 
   return (
     <>
-      <div className="relative py-8 sm:py-12 md:py-16 z-[1] bg-[#f5f3f0] dark:bg-[#0E0F11]">
-        <img
-          src="/MaskGroup.svg"
-          alt="Hero Background"
-          className="absolute w-full h-full object-contain sm:object-cover -z-10 dark:hidden"
-        />
-        <img
-          src="/MaskGroup_Dark.svg"
-          alt="Hero Background"
-          className="absolute w-full h-full object-contain sm:object-cover -z-10 hidden dark:block"
-        />
+      <div className="relative py-8 sm:py-12 md:py-16 z-[1] bg-[var(--hero-bg)]">
+        <HeroBackground />
 
         <input
           type="file"

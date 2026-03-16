@@ -10,30 +10,18 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui'
+import { useKeyStore } from '@/stores/useKeyStore'
 
-interface GeneralTabProps {
-  removePublicKeys: () => void
-  removeKeyPairs: () => void
-  removePasswordHash: () => void
-  setShowImportDialog: (value: boolean) => void
-}
-
-export const GeneralTab = ({
-  removePublicKeys,
-  removeKeyPairs,
-  removePasswordHash,
-  setShowImportDialog,
-}: GeneralTabProps) => {
+export const GeneralTab = () => {
   const { t } = useTranslation()
   const [isResetPopoverOpen, setIsResetPopoverOpen] = useState(false)
+  const resetAll = useKeyStore((s) => s.resetAll)
 
   const handleReset = useCallback(() => {
-    removePublicKeys()
-    removeKeyPairs()
-    removePasswordHash()
+    resetAll()
     setIsResetPopoverOpen(false)
     toast.success(t('settings.general.resetSuccess'))
-  }, [removePublicKeys, removeKeyPairs, removePasswordHash, t])
+  }, [resetAll, t])
 
   const handleBackup = useCallback(() => {
     toast.info(
@@ -105,10 +93,12 @@ export const GeneralTab = ({
             open={isResetPopoverOpen}
             onOpenChange={setIsResetPopoverOpen}
           >
-            <PopoverTrigger asChild>
-              <Button variant="destructive" className="w-full sm:w-auto">
-                {t('settings.general.reset')}
-              </Button>
+            <PopoverTrigger
+              render={
+                <Button variant="destructive" className="w-full sm:w-auto" />
+              }
+            >
+              {t('settings.general.reset')}
             </PopoverTrigger>
             <PopoverContent className="w-[90vw] sm:w-80">
               <div className="space-y-3 sm:space-y-4">

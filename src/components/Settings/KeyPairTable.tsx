@@ -182,15 +182,17 @@ export const KeyPairTable = ({
                   open={isNotePopoverOpen && editingIndex === index}
                   onOpenChange={(open) => !open && handleCancelNote()}
                 >
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="size-6 flex-shrink-0"
-                      onClick={() => handleEditNote(keyPair, index)}
-                    >
-                      <Pencil className="size-3" />
-                    </Button>
+                  <PopoverTrigger
+                    render={
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-6 flex-shrink-0"
+                        onClick={() => handleEditNote(keyPair, index)}
+                      />
+                    }
+                  >
+                    <Pencil className="size-3" />
                   </PopoverTrigger>
                   <PopoverContent className="w-72">
                     <div className="space-y-3">
@@ -232,15 +234,17 @@ export const KeyPairTable = ({
                 open={isDeletePopoverOpen && editingIndex === index}
                 onOpenChange={(open) => !open && handleCancelDelete()}
               >
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="size-6 text-red-500 hover:text-red-600"
-                    onClick={() => handleDeleteClick(index)}
-                  >
-                    <Trash2 className="size-3" />
-                  </Button>
+                <PopoverTrigger
+                  render={
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-6 text-red-500 hover:text-red-600"
+                      onClick={() => handleDeleteClick(index)}
+                    />
+                  }
+                >
+                  <Trash2 className="size-3" />
                 </PopoverTrigger>
                 <PopoverContent className="w-72">
                   <div className="space-y-3">

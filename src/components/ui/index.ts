@@ -1,6 +1,7 @@
 export * from './button'
 export * from './dialog'
 export * from './input'
+export * from './input-group'
 export * from './label'
 export * from './password-input'
 export * from './popover'

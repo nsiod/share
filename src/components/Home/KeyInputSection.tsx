@@ -3,11 +3,8 @@ import type React from 'react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Label, PasswordInput } from '@/components/ui'
-import { STORAGE_KEYS } from '@/constants'
-import { secureStorage } from '@/lib/encryption'
 import { sliceAddress } from '@/lib/help'
-
-import type { KeyPair, PublicKey } from '@/types'
+import { useKeyStore } from '@/stores/useKeyStore'
 
 interface KeyOption {
   value: string
@@ -30,47 +27,42 @@ export const KeyInputSection: React.FC<KeyInputSectionProps> = ({
   const [options, setOptions] = useState<KeyOption[]>([])
   const containerRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    const loadKeys = async () => {
-      const keyPairs = await secureStorage.getItem<KeyPair[]>(
-        STORAGE_KEYS.KEY_PAIRS,
-        [],
-      )
-      const publicKeys = await secureStorage.getItem<PublicKey[]>(
-        STORAGE_KEYS.PUBLIC_KEYS,
-        [],
-      )
-      const items: KeyOption[] = []
+  const { keyPairs, publicKeys, init } = useKeyStore()
 
-      if (processMode === 'encrypt') {
-        for (const pk of publicKeys) {
-          if (pk.publicKey) {
-            items.push({
-              value: pk.publicKey,
-              label: pk.note
-                ? `${pk.note} (${sliceAddress(pk.publicKey, 6, 4)})`
-                : sliceAddress(pk.publicKey, 10, 8),
-            })
-          }
-        }
-      } else {
-        for (const kp of keyPairs) {
-          const secretValue = kp.mnemonic || kp.privateKey
-          if (secretValue) {
-            items.push({
-              value: secretValue,
-              label: kp.note
-                ? `${kp.note} (${sliceAddress(secretValue, 10, 8)})`
-                : sliceAddress(secretValue, 14, 10),
-            })
-          }
+  useEffect(() => {
+    init()
+  }, [init])
+
+  useEffect(() => {
+    const items: KeyOption[] = []
+
+    if (processMode === 'encrypt') {
+      for (const pk of publicKeys) {
+        if (pk.publicKey) {
+          items.push({
+            value: pk.publicKey,
+            label: pk.note
+              ? `${pk.note} (${sliceAddress(pk.publicKey, 6, 4)})`
+              : sliceAddress(pk.publicKey, 10, 8),
+          })
         }
       }
-
-      setOptions(items)
+    } else {
+      for (const kp of keyPairs) {
+        const secretValue = kp.mnemonic || kp.privateKey
+        if (secretValue) {
+          items.push({
+            value: secretValue,
+            label: kp.note
+              ? `${kp.note} (${sliceAddress(secretValue, 10, 8)})`
+              : sliceAddress(secretValue, 14, 10),
+          })
+        }
+      }
     }
-    loadKeys()
-  }, [processMode])
+
+    setOptions(items)
+  }, [processMode, keyPairs, publicKeys])
 
   // Close dropdown on outside click
   useEffect(() => {

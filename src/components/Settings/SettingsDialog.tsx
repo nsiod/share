@@ -1,5 +1,5 @@
 import { ChevronLeft, Settings, X } from 'lucide-react'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { ExternalPublicKeysTab } from '@/components/Settings/ExternalPublicKeysTab'
@@ -18,10 +18,9 @@ import {
   TabsList,
   TabsTrigger,
 } from '@/components/ui'
-import { STORAGE_KEYS } from '@/constants'
-import { useSecureLocalStorage } from '@/hooks/useSecureLocalStorage'
 import { validatePublicKey } from '@/lib/key'
 import { cn } from '@/lib/utils'
+import { useKeyStore } from '@/stores/useKeyStore'
 
 import type { KeyPair, PublicKey, TabType } from '@/types'
 
@@ -41,22 +40,28 @@ export function SettingsDialog() {
   const [showImportDialog, setShowImportDialog] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
-  const [publicKeys, setPublicKeys, removePublicKeys] = useSecureLocalStorage<
-    PublicKey[]
-  >(STORAGE_KEYS.PUBLIC_KEYS, [])
+  const {
+    publicKeys,
+    setPublicKeys,
+    keyPairs,
+    setKeyPairs,
+    passwordHash: storedPasswordHash,
+    setPasswordHash: setStoredPasswordHash,
+    init,
+  } = useKeyStore()
+
   const [showAddKey, setShowAddKey] = useState(false)
   const [editKey, setEditKey] = useState<PublicKey | null>(null)
   const [validationError, setValidationError] = useState('')
 
-  const [keyPairs, setKeyPairs, removeKeyPairs] = useSecureLocalStorage<
-    KeyPair[]
-  >(STORAGE_KEYS.KEY_PAIRS, [])
   const [showCreateKeyPair, setShowCreateKeyPair] = useState(false)
   const [editKeyPair, setEditKeyPair] = useState<KeyPair | null>(null)
 
-  const [storedPasswordHash, setStoredPasswordHash, removePasswordHash] =
-    useSecureLocalStorage<string | null>(STORAGE_KEYS.PASSWORD_HASH, null)
   const [showChangePassword, setShowChangePassword] = useState(false)
+
+  useEffect(() => {
+    init()
+  }, [init])
 
   const resetAllStates = useCallback(() => {
     setShowImportDialog(false)
@@ -196,14 +201,7 @@ export function SettingsDialog() {
 
     switch (activeTab) {
       case 'General':
-        return (
-          <GeneralTab
-            removePublicKeys={removePublicKeys}
-            removeKeyPairs={removeKeyPairs}
-            removePasswordHash={removePasswordHash}
-            setShowImportDialog={setShowImportDialog}
-          />
-        )
+        return <GeneralTab />
       case 'Keys':
         return (
           <KeysTab
@@ -259,7 +257,7 @@ export function SettingsDialog() {
             // Desktop: centered modal
             'sm:inset-auto sm:top-[50%] sm:left-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:max-w-[900px] sm:w-[90vw] sm:h-auto sm:max-h-[85vh] sm:rounded-lg',
           )}
-          showClose={false}
+          showCloseButton={false}
         >
           {/* Header */}
           <DialogHeader className="border-b p-3 sm:p-4 bg-white dark:bg-gray-900 flex-shrink-0">
@@ -283,9 +281,9 @@ export function SettingsDialog() {
             <Tabs
               value={activeTab}
               onValueChange={(val) => handleTabClick(val as TabType)}
-              className="flex flex-col items-center w-full"
+              className="w-full"
             >
-              <TabsList>
+              <TabsList className="w-full h-11">
                 {TABS.map((tab) => (
                   <TabsTrigger key={tab} value={tab}>
                     {tabLabelMap[tab]}

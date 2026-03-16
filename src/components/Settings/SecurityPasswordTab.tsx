@@ -117,13 +117,15 @@ export const SecurityPasswordTab = ({
             </h2>
             {isPasswordSet && (
               <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-500 cursor-pointer"
-                  >
-                    {t('settings.password.forgot')}
-                  </Button>
+                <PopoverTrigger
+                  render={
+                    <Button
+                      variant="ghost"
+                      className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-500 cursor-pointer"
+                    />
+                  }
+                >
+                  {t('settings.password.forgot')}
                 </PopoverTrigger>
                 <PopoverContent className="w-[90vw] sm:w-80">
                   <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">

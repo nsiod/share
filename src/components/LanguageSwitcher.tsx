@@ -15,7 +15,8 @@ const LANGUAGES = [
 export function LanguageSwitcher() {
   const { i18n } = useTranslation()
 
-  const handleChange = (value: string) => {
+  const handleChange = (value: string | null) => {
+    if (!value) return
     i18n.changeLanguage(value)
     localStorage.setItem('lang', value)
   }
