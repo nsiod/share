@@ -1,1 +1,0 @@
-# @nsiod/share-utils

@@ -2,15 +2,9 @@
 
 DIRS_TO_DELETE=(
   "node_modules"
-  ".turbo"
-  "apps/*/node_modules"
-  "apps/*/.turbo"
-  "apps/*/.next"
-  "apps/*/out"
-  "apps/*/dist"
-  "packages/*/node_modules"
-  "packages/*/.turbo"
-  "packages/*/dist"
+  ".next"
+  "out"
+  "dist"
 )
 
 echo "Start cleaning up directories: ${DIRS_TO_DELETE[*]}"
