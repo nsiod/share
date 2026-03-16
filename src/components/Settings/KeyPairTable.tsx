@@ -83,7 +83,7 @@ export const KeyPairTable = ({
   }
 
   const handleLink = (publicKey: string) => {
-    const link = `${window.location.href}#/pub/${publicKey}`
+    const link = `${window.location.origin}${window.location.pathname}#/pub/${publicKey}`
     window.open(link, '_blank', 'noopener,noreferrer')
   }
 

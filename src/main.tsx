@@ -25,6 +25,14 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             </App>
           }
         />
+        <Route
+          path="/pub/:publicKey"
+          element={
+            <App>
+              <Home />
+            </App>
+          }
+        />
       </Routes>
     </HashRouter>
   </React.StrictMode>,

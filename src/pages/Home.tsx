@@ -1,4 +1,5 @@
 import { useCallback, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import {
   ActionButtons,
   CryptoTabs,
@@ -11,6 +12,7 @@ import { useCryptoLogic, useCryptoState, useDragAndDrop } from '@/hooks'
 import { isBase58String, validateBase58PublicKey } from '@/lib'
 
 export default function HomePage() {
+  const { publicKey } = useParams<{ publicKey: string }>()
   const {
     state,
     updateState,
@@ -56,27 +58,13 @@ export default function HomePage() {
   }
 
   useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.replace(/^#\/?/, '')
-      if (hash.startsWith('pub/')) {
-        const pubKey = hash.substring(4)
-        if (pubKey && isBase58String(pubKey)) {
-          const validation = validateBase58PublicKey(pubKey)
-          if (validation.isValid) {
-            updateState({ keyInput: pubKey, processMode: 'encrypt' })
-          } else {
-            updateState({ keyInput: '' })
-          }
-        } else {
-          updateState({ keyInput: '' })
-        }
+    if (publicKey && isBase58String(publicKey)) {
+      const validation = validateBase58PublicKey(publicKey)
+      if (validation.isValid) {
+        updateState({ keyInput: publicKey, processMode: 'encrypt' })
       }
     }
-
-    handleHashChange()
-    window.addEventListener('hashchange', handleHashChange)
-    return () => window.removeEventListener('hashchange', handleHashChange)
-  }, [updateState])
+  }, [publicKey, updateState])
 
   const isProcessButtonDisabled =
     (state.inputType === 'file' && !state.selectedFile) ||
