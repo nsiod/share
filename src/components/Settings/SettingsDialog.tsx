@@ -109,9 +109,13 @@ export function SettingsDialog() {
               onValueChange={(val) => handleTabClick(val as TabType)}
               className="w-full"
             >
-              <TabsList className="w-full h-11">
+              <TabsList className="w-full h-11 bg-transparent border border-gray-200 dark:border-gray-700 rounded-full p-1">
                 {TABS.map((tab) => (
-                  <TabsTrigger key={tab} value={tab}>
+                  <TabsTrigger
+                    key={tab}
+                    value={tab}
+                    className="rounded-full data-active:bg-primary data-active:text-primary-foreground data-active:shadow-none dark:data-active:bg-primary dark:data-active:text-primary-foreground dark:data-active:border-transparent"
+                  >
                     {tabLabelMap[tab]}
                   </TabsTrigger>
                 ))}
@@ -120,7 +124,7 @@ export function SettingsDialog() {
           </div>
 
           {/* Content area */}
-          <div className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-800 min-h-0">
+          <div className="flex-1 overflow-y-auto bg-white dark:bg-gray-900 min-h-0">
             {renderTabContent()}
           </div>
         </DialogContent>

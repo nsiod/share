@@ -11,7 +11,11 @@ export function ThemeSelector() {
 
   const setTheme = (theme: string) => {
     localStorage.setItem('theme', theme)
-    if (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    if (
+      theme === 'dark' ||
+      (theme === 'system' &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches)
+    ) {
       document.documentElement.classList.add('dark')
     } else {
       document.documentElement.classList.remove('dark')
@@ -19,7 +23,7 @@ export function ThemeSelector() {
   }
 
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between py-3 sm:py-4 border-b border-gray-200 dark:border-gray-700 gap-2 sm:gap-0">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 py-3 sm:py-4 gap-2 sm:gap-0">
       <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">
         {t('settings.general.theme')}
       </h3>
