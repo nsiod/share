@@ -1,5 +1,5 @@
 import { Settings, X } from 'lucide-react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ExternalPublicKeysTab } from '@/components/Settings/ExternalPublicKeysTab'
 import { GeneralTab } from '@/components/Settings/GeneralTab'
@@ -16,7 +16,6 @@ import {
   TabsTrigger,
 } from '@/components/ui'
 import { cn } from '@/lib/utils'
-import { useKeyStore } from '@/stores/useKeyStore'
 
 import type { TabType } from '@/types'
 
@@ -33,18 +32,9 @@ export function SettingsDialog() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [activeTab, setActiveTab] = useState<TabType>('General')
 
-  const init = useKeyStore((s) => s.init)
-
-  useEffect(() => {
-    init()
-  }, [init])
-
-  const handleTabClick = useCallback(
-    (tab: TabType) => {
-      setActiveTab(tab)
-    },
-    [],
-  )
+  const handleTabClick = useCallback((tab: TabType) => {
+    setActiveTab(tab)
+  }, [])
 
   const handleCloseDialog = useCallback(() => {
     setIsDialogOpen(false)
@@ -67,11 +57,7 @@ export function SettingsDialog() {
       case 'External Public Keys':
         return <ExternalPublicKeysTab />
       case 'Security Password':
-        return (
-          <SecurityPasswordTab
-            setActiveTab={setActiveTab}
-          />
-        )
+        return <SecurityPasswordTab setActiveTab={setActiveTab} />
       default:
         return null
     }

@@ -1,93 +1,77 @@
 import { create } from 'zustand'
-import { toast } from 'sonner'
-import { secureStorage } from '@/lib/encryption'
-import { STORAGE_KEYS } from '@/constants'
+import { persist, createJSONStorage } from 'zustand/middleware'
+import { encryptForStorage, decryptFromStorage } from '@/lib/encryption'
 import type { KeyPair, PublicKey } from '@/types'
 
-interface KeyStoreState {
+const STORAGE_NAME = 'secure-key-store'
+
+interface KeyStoreData {
   keyPairs: KeyPair[]
   publicKeys: PublicKey[]
   passwordHash: string | null
-  isLoaded: boolean
+}
 
-  // Actions
-  init: () => Promise<void>
+interface KeyStoreActions {
   setKeyPairs: (keyPairs: KeyPair[] | ((prev: KeyPair[]) => KeyPair[])) => void
   setPublicKeys: (publicKeys: PublicKey[] | ((prev: PublicKey[]) => PublicKey[])) => void
   setPasswordHash: (hash: string | null) => void
-  removeKeyPairs: () => void
-  removePublicKeys: () => void
-  removePasswordHash: () => void
   resetAll: () => void
 }
 
-export const useKeyStore = create<KeyStoreState>((set, get) => ({
-  keyPairs: [],
-  publicKeys: [],
-  passwordHash: null,
-  isLoaded: false,
+type KeyStoreState = KeyStoreData & KeyStoreActions
 
-  init: async () => {
-    if (get().isLoaded) return
+const encryptedStorage = createJSONStorage<KeyStoreData>(() => ({
+  getItem: async (name: string): Promise<string | null> => {
+    const encrypted = localStorage.getItem(name)
+    if (!encrypted) return null
     try {
-      const [keyPairs, publicKeys, passwordHash] = await Promise.all([
-        secureStorage.getItem<KeyPair[]>(STORAGE_KEYS.KEY_PAIRS, []),
-        secureStorage.getItem<PublicKey[]>(STORAGE_KEYS.PUBLIC_KEYS, []),
-        secureStorage.getItem<string | null>(STORAGE_KEYS.PASSWORD_HASH, null),
-      ])
-      set({ keyPairs, publicKeys, passwordHash, isLoaded: true })
-    } catch (error) {
-      console.error('Failed to load encrypted data from localStorage:', error)
-      toast.error('Failed to load data from storage')
-      set({ isLoaded: true })
+      return await decryptFromStorage(encrypted)
+    } catch {
+      return null
     }
   },
-
-  setKeyPairs: (keyPairs) => {
-    const resolved = typeof keyPairs === 'function' ? keyPairs(get().keyPairs) : keyPairs
-    set({ keyPairs: resolved })
-    secureStorage.setItem(STORAGE_KEYS.KEY_PAIRS, resolved).catch((error) => {
-      console.error('Failed to save keyPairs:', error)
-      toast.error('Failed to save data to storage')
-    })
+  setItem: async (name: string, value: string): Promise<void> => {
+    const encrypted = await encryptForStorage(value)
+    localStorage.setItem(name, encrypted)
   },
-
-  setPublicKeys: (publicKeys) => {
-    const resolved = typeof publicKeys === 'function' ? publicKeys(get().publicKeys) : publicKeys
-    set({ publicKeys: resolved })
-    secureStorage.setItem(STORAGE_KEYS.PUBLIC_KEYS, resolved).catch((error) => {
-      console.error('Failed to save publicKeys:', error)
-      toast.error('Failed to save data to storage')
-    })
-  },
-
-  setPasswordHash: (hash) => {
-    set({ passwordHash: hash })
-    secureStorage.setItem(STORAGE_KEYS.PASSWORD_HASH, hash).catch((error) => {
-      console.error('Failed to save passwordHash:', error)
-      toast.error('Failed to save data to storage')
-    })
-  },
-
-  removeKeyPairs: () => {
-    set({ keyPairs: [] })
-    secureStorage.removeItem(STORAGE_KEYS.KEY_PAIRS)
-  },
-
-  removePublicKeys: () => {
-    set({ publicKeys: [] })
-    secureStorage.removeItem(STORAGE_KEYS.PUBLIC_KEYS)
-  },
-
-  removePasswordHash: () => {
-    set({ passwordHash: null })
-    secureStorage.removeItem(STORAGE_KEYS.PASSWORD_HASH)
-  },
-
-  resetAll: () => {
-    set({ keyPairs: [], publicKeys: [], passwordHash: null })
-    secureStorage.removeItem(STORAGE_KEYS.KEY_PAIRS)
-    secureStorage.removeItem(STORAGE_KEYS.PUBLIC_KEYS)
-    secureStorage.removeItem(STORAGE_KEYS.PASSWORD_HASH)
+  removeItem: (name: string): void => {
+    localStorage.removeItem(name)
   },
 }))
+
+export const useKeyStore = create<KeyStoreState>()(
+  persist(
+    (set, get) => ({
+      keyPairs: [],
+      publicKeys: [],
+      passwordHash: null,
+
+      setKeyPairs: (keyPairs) => {
+        const resolved = typeof keyPairs === 'function' ? keyPairs(get().keyPairs) : keyPairs
+        set({ keyPairs: resolved })
+      },
+
+      setPublicKeys: (publicKeys) => {
+        const resolved = typeof publicKeys === 'function' ? publicKeys(get().publicKeys) : publicKeys
+        set({ publicKeys: resolved })
+      },
+
+      setPasswordHash: (hash) => {
+        set({ passwordHash: hash })
+      },
+
+      resetAll: () => {
+        set({ keyPairs: [], publicKeys: [], passwordHash: null })
+      },
+    }),
+    {
+      name: STORAGE_NAME,
+      storage: encryptedStorage,
+      partialize: (state) => ({
+        keyPairs: state.keyPairs,
+        publicKeys: state.publicKeys,
+        passwordHash: state.passwordHash,
+      }),
+    },
+  ),
+)

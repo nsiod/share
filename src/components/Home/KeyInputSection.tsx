@@ -27,11 +27,8 @@ export const KeyInputSection: React.FC<KeyInputSectionProps> = ({
   const [options, setOptions] = useState<KeyOption[]>([])
   const containerRef = useRef<HTMLDivElement>(null)
 
-  const { keyPairs, publicKeys, init } = useKeyStore()
-
-  useEffect(() => {
-    init()
-  }, [init])
+  const keyPairs = useKeyStore((s) => s.keyPairs)
+  const publicKeys = useKeyStore((s) => s.publicKeys)
 
   useEffect(() => {
     const items: KeyOption[] = []
