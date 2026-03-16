@@ -22,7 +22,7 @@ export function LanguageSelector() {
       <RadioGroup
         value={i18n.language}
         onValueChange={handleChange}
-        className="flex flex-row gap-4"
+        className="flex flex-row gap-4 w-auto"
       >
         {LANGUAGES.map((lang) => (
           <div key={lang.value} className="flex items-center space-x-2">

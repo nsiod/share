@@ -1,21 +1,22 @@
-import { ChevronLeft } from 'lucide-react'
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '@/components/ui'
 import { CreateKeyPairForm } from '@/components/Settings/CreateKeyPairForm'
 import { EmptyState } from '@/components/Settings/EmptyState'
 import { KeyPairTable } from '@/components/Settings/KeyPairTable'
+import { Button } from '@/components/ui'
 import { useKeyPairManagement } from '@/hooks/useKeyPairManagement'
-import { useKeyStore } from '@/stores/useKeyStore'
 import { deriveKeyPair } from '@/lib/help'
+import { useKeyStore } from '@/stores/useKeyStore'
 
 import type { KeyPair } from '@/types'
+
+type View = 'list' | 'create' | 'import'
 
 export const KeysTab = () => {
   const { t } = useTranslation()
   const keyPairs = useKeyStore((s) => s.keyPairs)
 
-  const [showCreateKeyPair, setShowCreateKeyPair] = useState(false)
+  const [view, setView] = useState<View>('list')
   const [editKeyPair, setEditKeyPair] = useState<KeyPair | null>(null)
 
   const {
@@ -26,37 +27,34 @@ export const KeysTab = () => {
     handleSaveNoteInTable,
   } = useKeyPairManagement({
     setEditKeyPair,
-    setShowCreateKeyPair,
+    setShowCreateKeyPair: (show: boolean) => {
+      if (show) setView('create')
+      else setView('list')
+    },
   })
 
-  const handleNoteChange = useCallback(
-    (value: string) => {
-      setEditKeyPair((prev: KeyPair | null) =>
-        prev
-          ? { ...prev, note: value }
-          : { publicKey: '', mnemonic: '', note: value },
-      )
-    },
-    [],
-  )
+  const handleNoteChange = useCallback((value: string) => {
+    setEditKeyPair((prev: KeyPair | null) =>
+      prev
+        ? { ...prev, note: value }
+        : { publicKey: '', mnemonic: '', note: value },
+    )
+  }, [])
 
-  const handleMnemonicChange = useCallback(
-    (value: string) => {
-      setEditKeyPair((prev: KeyPair | null) => {
-        let publicKey = prev?.publicKey || ''
-        try {
-          const kp = deriveKeyPair(value)
-          publicKey = kp.publicKey
-        } catch {
-          publicKey = ''
-        }
-        return prev
-          ? { ...prev, mnemonic: value, publicKey }
-          : { publicKey, mnemonic: value, note: '' }
-      })
-    },
-    [],
-  )
+  const handleMnemonicChange = useCallback((value: string) => {
+    setEditKeyPair((prev: KeyPair | null) => {
+      let publicKey = prev?.publicKey || ''
+      try {
+        const kp = deriveKeyPair(value)
+        publicKey = kp.publicKey
+      } catch {
+        publicKey = ''
+      }
+      return prev
+        ? { ...prev, mnemonic: value, publicKey }
+        : { publicKey, mnemonic: value, note: '' }
+    })
+  }, [])
 
   const handleSave = useCallback(() => {
     if (editKeyPair) {
@@ -64,50 +62,45 @@ export const KeysTab = () => {
     }
   }, [editKeyPair, handleSaveKeyPair])
 
-  if (showCreateKeyPair) {
+  const handleStartImport = useCallback(() => {
+    setEditKeyPair({ publicKey: '', mnemonic: '', note: '' })
+    setView('import')
+  }, [])
+
+  // Create key view
+  if (view === 'create') {
     return (
-      <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
-        <div className="flex items-center gap-2 mb-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setShowCreateKeyPair(false)}
-          >
-            <ChevronLeft className="size-4" />
-          </Button>
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-            {t('settings.tabs.keys')}
-          </h2>
-        </div>
-        <div className="flex justify-center text-center pt-2 pb-6">
-          <CreateKeyPairForm
-            keyPair={editKeyPair}
-            onNoteChange={handleNoteChange}
-            onMnemonicChange={handleMnemonicChange}
-            onSave={handleSave}
-            onCancel={() => setShowCreateKeyPair(false)}
-          />
-        </div>
+      <div className="p-4 sm:p-6">
+        <CreateKeyPairForm
+          keyPair={editKeyPair}
+          onNoteChange={handleNoteChange}
+          onMnemonicChange={handleMnemonicChange}
+          onSave={handleSave}
+          onCancel={() => setView('list')}
+        />
       </div>
     )
   }
 
-  return (
-    <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-          {t('settings.tabs.keys')}
-        </h2>
-        {keyPairs.length > 0 && (
-          <Button
-            className="bg-blue-600 hover:bg-blue-700 text-white"
-            onClick={handleCreateKeyPair}
-          >
-            {t('settings.keys.createKey')}
-          </Button>
-        )}
+  // Import key view
+  if (view === 'import') {
+    return (
+      <div className="p-4 sm:p-6">
+        <CreateKeyPairForm
+          mode="import"
+          keyPair={editKeyPair}
+          onNoteChange={handleNoteChange}
+          onMnemonicChange={handleMnemonicChange}
+          onSave={handleSave}
+          onCancel={() => setView('list')}
+        />
       </div>
+    )
+  }
 
+  // List view
+  return (
+    <div className="flex flex-col p-4 sm:p-6">
       {keyPairs.length === 0 ? (
         <EmptyState
           icon="/PublicKeys.svg"
@@ -117,16 +110,28 @@ export const KeysTab = () => {
           onButtonClick={handleCreateKeyPair}
         />
       ) : (
-        <KeyPairTable
-          keyPairs={keyPairs}
-          onCopyPublic={(key) => handleCopyKey(key, 'public')}
-          onCopyMnemonic={(key) => handleCopyKey(key, 'mnemonic')}
-          onEditNote={(keyPair, index) =>
-            setEditKeyPair({ ...keyPair, index })
-          }
-          onDelete={handleDeleteKeyPair}
-          onSaveNote={handleSaveNoteInTable}
-        />
+        <>
+          <div className="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <KeyPairTable
+              keyPairs={keyPairs}
+              onCopyPublic={(key) => handleCopyKey(key, 'public')}
+              onCopyMnemonic={(key) => handleCopyKey(key, 'mnemonic')}
+              onDelete={handleDeleteKeyPair}
+              onSaveNote={handleSaveNoteInTable}
+            />
+          </div>
+          <div className="flex justify-end gap-3 mt-4">
+            <Button variant="outline" onClick={handleStartImport}>
+              {t('settings.keys.importKey')}
+            </Button>
+            <Button
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+              onClick={handleCreateKeyPair}
+            >
+              {t('settings.keys.createKey')}
+            </Button>
+          </div>
+        </>
       )}
     </div>
   )

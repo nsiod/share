@@ -1,14 +1,13 @@
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
-import { ChevronLeft } from 'lucide-react'
-import { Button } from '@/components/ui'
 import { EmptyState } from '@/components/Settings/EmptyState'
 import { PublicKeyForm } from '@/components/Settings/PublicKeyForm'
 import { PublicKeyTable } from '@/components/Settings/PublicKeyTable'
+import { Button } from '@/components/ui'
 import { usePublicKeyManagement } from '@/hooks/usePublicKeyManagement'
-import { useKeyStore } from '@/stores/useKeyStore'
 import { validatePublicKey } from '@/lib/key'
+import { useKeyStore } from '@/stores/useKeyStore'
 
 import type { PublicKey } from '@/types'
 
@@ -29,25 +28,22 @@ export const ExternalPublicKeysTab = () => {
     setShowAddKey(true)
   }, [])
 
-  const handleEditNote = useCallback(
-    (key: PublicKey, index: number) => {
-      setEditKey({ ...key, index })
-      setShowAddKey(true)
-    },
-    [],
-  )
+  const handleEditNote = useCallback((key: PublicKey, index: number) => {
+    setEditKey({ ...key, index })
+    setShowAddKey(true)
+  }, [])
 
   const handleSavePublicKey = useCallback(() => {
     if (!editKey) {
-      setValidationError('No public key data provided')
-      toast.error('No public key data provided')
+      setValidationError(t('error.invalidPublicKey'))
+      toast.error(t('error.invalidPublicKey'))
       return
     }
 
     const validation = validatePublicKey(editKey.publicKey)
     if (!validation.isValid) {
-      setValidationError(validation.error || 'Invalid public key')
-      toast.error(validation.error || 'Invalid public key')
+      setValidationError(validation.error || t('error.invalidPublicKey'))
+      toast.error(validation.error || t('error.invalidPublicKey'))
       return
     }
 
@@ -73,63 +69,35 @@ export const ExternalPublicKeysTab = () => {
 
   if (showAddKey) {
     return (
-      <div className="p-3 sm:p-6">
-        <div className="flex items-center gap-2 mb-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setShowAddKey(false)}
-          >
-            <ChevronLeft className="size-4" />
-          </Button>
-          <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">
-            {t('settings.tabs.externalKeys')}
-          </h2>
-        </div>
-        <div className="flex justify-center text-center pt-2 pb-6">
-          <PublicKeyForm
-            editKey={editKey}
-            validationError={validationError}
-            onPublicKeyChange={(value) =>
-              setEditKey((prev) => ({
-                ...(prev || { publicKey: '', note: '' }),
-                publicKey: value,
-              }))
-            }
-            onNoteChange={(value) =>
-              setEditKey((prev) => ({
-                ...(prev || { publicKey: '', note: '' }),
-                note: value,
-              }))
-            }
-            onSave={handleSavePublicKey}
-            onCancel={() => {
-              setShowAddKey(false)
-              setEditKey(null)
-              setValidationError('')
-            }}
-          />
-        </div>
+      <div className="p-4 sm:p-6">
+        <PublicKeyForm
+          editKey={editKey}
+          validationError={validationError}
+          onPublicKeyChange={(value) =>
+            setEditKey((prev) => ({
+              ...(prev || { publicKey: '', note: '' }),
+              publicKey: value,
+            }))
+          }
+          onNoteChange={(value) =>
+            setEditKey((prev) => ({
+              ...(prev || { publicKey: '', note: '' }),
+              note: value,
+            }))
+          }
+          onSave={handleSavePublicKey}
+          onCancel={() => {
+            setShowAddKey(false)
+            setEditKey(null)
+            setValidationError('')
+          }}
+        />
       </div>
     )
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-          {t('settings.tabs.externalKeys')}
-        </h2>
-        {publicKeys.length > 0 && (
-          <Button
-            className="bg-blue-600 hover:bg-blue-700 text-white"
-            onClick={handleAddPublicKey}
-          >
-            {t('settings.externalKeys.add')}
-          </Button>
-        )}
-      </div>
-
+    <div className="flex flex-col p-4 sm:p-6">
       {publicKeys.length === 0 ? (
         <EmptyState
           icon="/PublicKeys.svg"
@@ -139,13 +107,25 @@ export const ExternalPublicKeysTab = () => {
           onButtonClick={handleAddPublicKey}
         />
       ) : (
-        <PublicKeyTable
-          publicKeys={publicKeys}
-          onCopy={handleCopy}
-          onEditNote={handleEditNote}
-          onDelete={handleDeleteKey}
-          onSaveNote={handleSaveNoteInTable}
-        />
+        <>
+          <div className="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <PublicKeyTable
+              publicKeys={publicKeys}
+              onCopy={handleCopy}
+              onEditNote={handleEditNote}
+              onDelete={handleDeleteKey}
+              onSaveNote={handleSaveNoteInTable}
+            />
+          </div>
+          <div className="flex justify-end gap-3 mt-4">
+            <Button
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+              onClick={handleAddPublicKey}
+            >
+              {t('settings.externalKeys.add')}
+            </Button>
+          </div>
+        </>
       )}
     </div>
   )
